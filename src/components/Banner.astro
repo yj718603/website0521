@@ -1,0 +1,94 @@
+---
+import backgroundCNwebp from "../assets/images/banner_cn.webp";
+import backgroundCNjpg from "../assets/images/banner_cn.jpg";
+import backgroundCNwep2x from "../assets/images/banner_cn@2x.webp";
+import backgroundCNjpg2x from "../assets/images/banner_cn@2x.jpg";
+import backgroundCNwep3x from "../assets/images/banner_cn@3x.webp";
+import backgroundCNjpg3x from "../assets/images/banner_cn@3x.jpg";
+
+import backgroundENwebp from "../assets/images/banner_en.webp";
+import backgroundENjpg from "../assets/images/banner_en.jpg";
+import backgroundENwep2x from "../assets/images/banner_en@2x.webp";
+import backgroundENjpg2x from "../assets/images/banner_en@2x.jpg";
+import backgroundENwep3x from "../assets/images/banner_en@3x.webp";
+import backgroundENjpg3x from "../assets/images/banner_en@3x.jpg";
+
+import backgroundJPwebp from "../assets/images/banner_jp.webp";
+import backgroundJPjpg from "../assets/images/banner_jp.jpg";
+import backgroundJPwep2x from "../assets/images/banner_jp@2x.webp";
+import backgroundJPjpg2x from "../assets/images/banner_jp@2x.jpg";
+import backgroundJPwep3x from "../assets/images/banner_jp@3x.webp";
+import backgroundJPjpg3x from "../assets/images/banner_jp@3x.jpg";
+
+import "../styles/banner.css";
+
+// 从传入的属性中获取 i18n 对象和 locale（如果需要）
+const { i18n, locale } = Astro.props;
+
+// 判断语言
+const isChinese = locale === "zh-Hans" || locale === "zh-Hant";
+const isJapanese = locale === "ja";
+
+// 根据语言选择不同图片
+let webp1x, webp2x, webp3x, jpg1x, jpg2x, jpg3x;
+if (isChinese) {
+    webp1x = backgroundCNwebp;
+    webp2x = backgroundCNwep2x;
+    webp3x = backgroundCNwep3x;
+    jpg1x = backgroundCNjpg;
+    jpg2x = backgroundCNjpg2x;
+    jpg3x = backgroundCNjpg3x;
+} else if (isJapanese) {
+    webp1x = backgroundJPwebp;
+    webp2x = backgroundJPwep2x;
+    webp3x = backgroundJPwep3x;
+    jpg1x = backgroundJPjpg;
+    jpg2x = backgroundJPjpg2x;
+    jpg3x = backgroundJPjpg3x;
+} else {
+    webp1x = backgroundENwebp;
+    webp2x = backgroundENwep2x;
+    webp3x = backgroundENwep3x;
+    jpg1x = backgroundENjpg;
+    jpg2x = backgroundENjpg2x;
+    jpg3x = backgroundENjpg3x;
+}
+
+// 需要对“WORDS”高亮，可在此处理英文版的 slogan 文案
+function highlightWordsIfNeeded(slogan: string) {
+    // 仅在非中文、非日文时处理
+    if (!isChinese && !isJapanese) {
+        // 假设 i18n["banner.slogan"] = "The World, YOUR WORDS"
+        // 这里简单地把 "WORDS" 替换为带 span 的版本
+        return slogan.replace(/WORDS/, "<span class='pink'>WORDS</span>");
+    }
+    return slogan;
+}
+const finalSlogan = highlightWordsIfNeeded(i18n["banner.slogan"]);
+---
+
+<div id="banner" class="sectionContainer">
+    <picture>
+        <!-- WebP 格式优先，回退到 JPEG -->
+        <source type="image/webp" />
+        <source srcset={`${webp1x.src} 1x, ${webp2x.src} 2x, ${webp3x.src} 3x`} type="image/webp" />
+        <source srcset={`${jpg1x.src} 1x, ${jpg2x.src} 2x, ${jpg3x.src} 3x`} type="image/jpeg" />
+        <img src={jpg1x.src} alt="banner_background" fetchpriority="high" />
+    </picture>
+
+    <div class="bannerContainer">
+        <h1 id={"slogan-${locale"} set:html={finalSlogan} />
+        <div class="bannerP">
+            <span
+                style="font-weight: 900; font-size: 1.5rem; font-family: 'Helvetica Neue', Helvetica, 'Noto Sans', Arial, sans-serif;"
+                >mTranslator</span
+            >
+
+            <span style="font-weight: 500; font-size: 1.5rem;">:&nbsp;&nbsp;</span>
+            <span class="bannerText" set:html={i18n["banner.text"]} />
+            <div class="fullsizeLink">
+                <a href="">{i18n["banner.button"]}</a>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,37 @@
+{
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+            "@type": "WebSite",
+            "@id": "https://www.mtranslator.dev/#website",
+            "name": "mTranslator",
+            "url": "https://www.mtranslator.dev",
+            "inLanguage": "fr",
+            "description": "mTranslator est une plateforme de traduction intelligente propulsée par des modèles de langage de grande envergure (LLM), conçue pour briser les barrières linguistiques et faciliter une communication mondiale fluide. mTranslator prend en charge plusieurs scénarios de traduction : traduction de pages web en un clic, traduction de sous-titres en temps réel, traduction de champs de saisie et traduction de documents dans divers formats."
+        },
+        {
+            "@type": "WebPage",
+            "@id": "https://www.mtranslator.dev/fr/#webpage",
+            "isPartOf": {
+                "@id": "https://www.mtranslator.dev/#website"
+            },
+            "name": "Accueil - mTranslator",
+            "url": "https://www.mtranslator.dev/fr",
+            "inLanguage": "fr",
+            "logo": "https://static.mcopilot.io/mtranslator/logo.8ce8b671.svg",
+            "slogan": "The World, YOUR WORDS",
+            "description": "mTranslator est une plateforme de traduction intelligente propulsée par des modèles de langage de grande envergure (LLM), conçue pour briser les barrières linguistiques et faciliter une communication mondiale fluide. mTranslator prend en charge plusieurs scénarios de traduction : traduction de pages web en un clic, traduction de sous-titres en temps réel, traduction de champs de saisie et traduction de documents dans divers formats.",
+            "breadcrumb": {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Accueil",
+                        "item": "https://www.mtranslator.dev/fr"
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -1,0 +1,593 @@
+---
+import newsSitesI18n from "../locales/newsSite_i18n_config.json";
+// 假设 locale 是通过 props 传入的，默认使用 "en"
+const locale = Astro.props.locale || "en";
+interface NewsSitesI18n {
+    [lang: string]: { [key: string]: string };
+}
+
+console.log(locale);
+
+// 使用类型断言确保数据类型正确
+const newsSitesI18nData = newsSitesI18n as NewsSitesI18n;
+
+// 根据 locale 选择对应的翻译数据，如果不存在则使用英文
+const newsSitesData = newsSitesI18nData[locale] || newsSitesI18nData["en"];
+
+// 将翻译数据转换为 JSON 字符串，用于客户端注入
+const newsSitesDataStr = JSON.stringify(newsSitesData);
+---
+
+<style>
+    /* 地图容器与 tooltip 样式 */
+    #map-container {
+        position: relative;
+        width: 100%;
+        height: 600px;
+        background: #0b0b0b;
+    }
+    canvas {
+        display: block;
+    }
+    #tooltip {
+        position: absolute;
+        display: none;
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        padding: 8px;
+        border-radius: 4px;
+        pointer-events: none;
+        font-size: 12px;
+        z-index: 10;
+    }
+</style>
+
+<div id="map-container" data-news={newsSitesDataStr}>
+    <canvas id="map-canvas"></canvas>
+    <div id="tooltip"></div>
+</div>
+
+<script>
+    // export {}; // 保证这是一个模块
+
+    import * as d3 from "d3";
+    import * as topojson from "topojson-client";
+
+    // 定义新闻站点数据类型
+    interface NewsSite {
+        name: string;
+        url: string;
+        region: string;
+        lat: number;
+        lng: number;
+        description?: string;
+    }
+
+    // 定义新闻站点i18n数据类型
+    interface NewsSiteData {
+        [key: string]: string;
+    }
+
+    // 新闻站点数据
+    const newsSites: NewsSite[] = [
+        // 欧洲
+        {
+            name: "BBC News",
+            url: "https://www.bbc.com/news",
+            region: "Europe",
+            lat: 51.5074,
+            lng: -0.1278,
+            description: "英国广播公司新闻",
+        },
+        {
+            name: "The Guardian",
+            url: "https://www.theguardian.com/international",
+            region: "Europe",
+            lat: 51.5074,
+            lng: -0.1278,
+            description: "英国卫报",
+        },
+        {
+            name: "Reuters",
+            url: "https://www.reuters.com",
+            region: "Europe",
+            lat: 51.5074,
+            lng: -0.1278,
+            description: "路透社",
+        },
+        {
+            name: "Der Spiegel",
+            url: "https://www.spiegel.de",
+            region: "Europe",
+            lat: 52.52,
+            lng: 13.405,
+            description: "德国明镜周刊",
+        },
+        {
+            name: "Le Monde",
+            url: "https://www.lemonde.fr",
+            region: "Europe",
+            lat: 48.8566,
+            lng: 2.3522,
+            description: "法国新闻",
+        },
+        {
+            name: "El País",
+            url: "https://elpais.com",
+            region: "Europe",
+            lat: 40.4168,
+            lng: -3.7038,
+            description: "西班牙报纸",
+        },
+        {
+            name: "Corriere della Sera",
+            url: "https://www.corriere.it",
+            region: "Europe",
+            lat: 41.9028,
+            lng: 12.4964,
+            description: "意大利日报",
+        },
+        {
+            name: "RT (Russia Today)",
+            url: "https://www.rt.com",
+            region: "Europe",
+            lat: 55.7558,
+            lng: 37.6173,
+            description: "俄罗斯今日新闻",
+        },
+        {
+            name: "乌克兰真理报",
+            url: "https://www.pravda.com.ua",
+            region: "Europe",
+            lat: 50.4501,
+            lng: 30.5234,
+            description: "乌克兰新闻",
+        },
+
+        // 亚洲
+        {
+            name: "NHK News",
+            url: "https://www3.nhk.or.jp/nhkworld/",
+            region: "Asia",
+            lat: 35.6895,
+            lng: 139.6917,
+            description: "日本NHK新闻",
+        },
+        {
+            name: "Yomiuri Shimbun",
+            url: "https://www.yomiuri.co.jp",
+            region: "Asia",
+            lat: 35.6895,
+            lng: 139.6917,
+            description: "日本读卖新闻",
+        },
+        {
+            name: "Chosun Ilbo",
+            url: "https://www.chosun.com",
+            region: "Asia",
+            lat: 37.5665,
+            lng: 126.978,
+            description: "韩国朝鲜日报",
+        },
+        {
+            name: "The Straits Times",
+            url: "https://www.straitstimes.com",
+            region: "Asia",
+            lat: 1.3521,
+            lng: 103.8198,
+            description: "新加坡海峡时报",
+        },
+        {
+            name: "The Times of India",
+            url: "https://timesofindia.indiatimes.com",
+            region: "Asia",
+            lat: 28.6139,
+            lng: 77.209,
+            description: "印度时报",
+        },
+        {
+            name: "China Daily",
+            url: "https://www.chinadaily.com.cn",
+            region: "Asia",
+            lat: 39.9042,
+            lng: 116.4074,
+            description: "中国日报",
+        },
+        {
+            name: "Al Jazeera English",
+            url: "https://www.aljazeera.com",
+            region: "Asia",
+            lat: 25.2854,
+            lng: 51.531,
+
+            description: "半岛电视台英文",
+        },
+        {
+            name: "The Jakarta Post",
+            url: "https://www.thejakartapost.com",
+            region: "Asia",
+            lat: -6.2088,
+            lng: 106.8456,
+
+            description: "印度尼西亚新闻",
+        },
+
+        // 北美洲
+        {
+            name: "CNN",
+            url: "https://www.cnn.com",
+            region: "North America",
+            lat: 33.749,
+            lng: -84.388,
+
+            description: "美国CNN",
+        },
+        {
+            name: "The New York Times",
+            url: "https://www.nytimes.com",
+            region: "North America",
+            lat: 40.7128,
+            lng: -74.006,
+            description: "纽约时报",
+        },
+        {
+            name: "The Washington Post",
+            url: "https://www.washingtonpost.com",
+            region: "North America",
+            lat: 38.9072,
+            lng: -77.0369,
+            description: "华盛顿邮报",
+        },
+        {
+            name: "Fox News",
+            url: "https://www.foxnews.com",
+            region: "North America",
+            lat: 40.7128,
+            lng: -74.006,
+            description: "福克斯新闻",
+        },
+        {
+            name: "CBC News",
+            url: "https://www.cbc.ca/news",
+            region: "North America",
+            lat: 43.6532,
+            lng: -79.3832,
+            description: "加拿大CBC新闻",
+        },
+        {
+            name: "The Globe and Mail",
+            url: "https://www.theglobeandmail.com",
+            region: "North America",
+            lat: 43.6532,
+            lng: -79.3832,
+            description: "加拿大环球邮报",
+        },
+        {
+            name: "Televisa News",
+            url: "https://noticieros.televisa.com",
+            region: "North America",
+            lat: 19.4326,
+            lng: -99.1332,
+            description: "墨西哥Televisa新闻",
+        },
+
+        // 南美洲
+        {
+            name: "O Globo",
+            url: "https://www.globo.com",
+            region: "South America",
+            lat: -22.9068,
+            lng: -43.1729,
+            description: "巴西O Globo",
+        },
+        {
+            name: "Folha de S.Paulo",
+            url: "https://www.folha.uol.com.br",
+            region: "South America",
+            lat: -23.5505,
+            lng: -46.6333,
+            description: "巴西Folha",
+        },
+        {
+            name: "La Nación",
+            url: "https://www.lanacion.com.ar",
+            region: "South America",
+            lat: -34.6037,
+            lng: -58.3816,
+            description: "阿根廷La Nación",
+        },
+        {
+            name: "El Mercurio",
+            url: "https://www.emol.com",
+            region: "South America",
+            lat: -33.4489,
+            lng: -70.6693,
+            description: "智利El Mercurio",
+        },
+        {
+            name: "El Tiempo",
+            url: "https://www.eltiempo.com",
+            region: "South America",
+            lat: 4.711,
+            lng: -74.0721,
+            description: "哥伦比亚El Tiempo",
+        },
+
+        // 阿拉伯国家
+        {
+            name: "Al Jazeera",
+            url: "https://www.aljazeera.com",
+            region: "Arab Countries",
+            lat: 25.2854,
+            lng: 51.531,
+            description: "半岛电视台",
+        },
+        {
+            name: "Al Arabiya",
+            url: "https://www.alarabiya.net",
+            region: "Arab Countries",
+            lat: 24.7136,
+            lng: 46.6753,
+            description: "阿拉比亚新闻",
+        },
+        {
+            name: "Gulf News",
+            url: "https://gulfnews.com",
+            region: "Arab Countries",
+            lat: 25.2048,
+            lng: 55.2708,
+            description: "海湾新闻",
+        },
+        {
+            name: "The National",
+            url: "https://www.thenationalnews.com",
+            region: "Arab Countries",
+            lat: 24.4539,
+            lng: 54.3773,
+            description: "阿联酋The National",
+        },
+        {
+            name: "Middle East Eye",
+            url: "https://www.middleeasteye.net",
+            region: "Arab Countries",
+            lat: 51.5074,
+            lng: -0.1278,
+            description: "英国/中东新闻",
+        },
+
+        // 非洲
+        {
+            name: "每日国民报",
+            url: "https://www.nation.co.ke/",
+            region: "Africa",
+            lat: -1.2921,
+            lng: 36.8219,
+            description: "肯尼亚每日国民报",
+        },
+
+        {
+            name: "Mail & Guardian",
+            url: "https://mg.co.za/",
+            region: "Africa",
+            lat: -26.2041,
+            lng: 28.0473,
+            description: "南非Mail & Guardian",
+        },
+        {
+            name: "The Guardian Nigeria",
+            url: "https://guardian.ng/",
+            region: "Africa",
+            lat: 6.5244,
+            lng: 3.3792,
+            description: "尼日利亚新闻",
+        },
+        {
+            name: "AllAfrica.com",
+            url: "https://allafrica.com/",
+            region: "Africa",
+            lat: 30.0444,
+            lng: 31.2357,
+            description: "非洲新闻",
+        },
+    ];
+
+    // ========== DOM 元素及全局变量初始化 ==========
+    const container = document.getElementById("map-container") as HTMLDivElement;
+    const canvas = document.getElementById("map-canvas") as HTMLCanvasElement;
+    const tooltip = document.getElementById("tooltip") as HTMLDivElement;
+    const context = canvas.getContext("2d")!;
+
+    const newsSitesI18nStr = container.dataset.news;
+    const newsSitesI18nData = JSON.parse(container.dataset.news as string) as NewsSiteData;
+
+    let width = container.clientWidth;
+    let height = container.clientHeight;
+    canvas.width = width;
+    canvas.height = height;
+
+    // 创建正射投影（orthographic）——球形效果
+    const projection = d3
+        .geoOrthographic()
+        .scale((Math.min(width, height) / 2) * 0.9)
+        .translate([width / 2, height / 2])
+        .clipAngle(90);
+
+    const path = d3.geoPath(projection, context);
+
+    // ========== 辅助函数 ==========
+    // 根据当前 UTC 时间计算太阳位置（简化算法）
+    function getSunPosition(date: Date): { lon: number; lat: number } {
+        const dayOfYear = Math.floor((date.getTime() - new Date(date.getFullYear(), 0, 0).getTime()) / 86400000);
+        const gamma = ((2 * Math.PI) / 365) * (dayOfYear - 1 + (date.getUTCHours() - 12) / 24);
+        const decl =
+            0.006918 -
+            0.399912 * Math.cos(gamma) +
+            0.070257 * Math.sin(gamma) -
+            0.006758 * Math.cos(2 * gamma) +
+            0.000907 * Math.sin(2 * gamma) -
+            0.002697 * Math.cos(3 * gamma) +
+            0.00148 * Math.sin(3 * gamma);
+        const sunLon = -(date.getUTCHours() + date.getUTCMinutes() / 60 - 12) * 15;
+        const sunLat = decl * (180 / Math.PI);
+        return { lon: sunLon, lat: sunLat };
+    }
+
+    // 动画相关：标记闪烁效果
+    let markerAlpha = 1;
+    let increasing = false;
+    function animateMarkers() {
+        markerAlpha = increasing ? markerAlpha + 0.02 : markerAlpha - 0.02;
+        if (markerAlpha <= 0.3) increasing = true;
+        if (markerAlpha >= 1) increasing = false;
+    }
+
+    // ========== 事件绑定 ==========
+    // 鼠标拖拽及 tooltip 逻辑
+    let isDragging = false;
+    let lastX = 0;
+
+    canvas.addEventListener("mousemove", (event) => {
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = event.clientX - rect.left;
+        const mouseY = event.clientY - rect.top;
+
+        if (isDragging) {
+            const dx = event.clientX - lastX;
+            lastX = event.clientX;
+            const currentRotate = projection.rotate();
+            projection.rotate([currentRotate[0] + dx * 0.5, currentRotate[1], currentRotate[2]]);
+        } else {
+            let hoveredSite: NewsSite | null = null;
+
+            // 使用 for-of 循环便于类型推断
+            for (const site of newsSites) {
+                const pos = projection([site.lng, site.lat]);
+                if (!pos) continue;
+                const [x, y] = pos;
+                const distance = Math.sqrt((mouseX - x) ** 2 + (mouseY - y) ** 2);
+                if (distance < 8) {
+                    hoveredSite = site;
+                    break;
+                }
+            }
+
+            if (hoveredSite !== null) {
+                const translatedName = newsSitesI18nData[hoveredSite.name] || hoveredSite.name;
+                const translatedDesc = newsSitesI18nData[hoveredSite.name + "_desc"] || hoveredSite.description || "";
+                tooltip.style.display = "block";
+                tooltip.style.left = event.clientX + 5 + "px";
+                tooltip.style.top = event.clientY + 5 + "px";
+                tooltip.innerHTML = `
+        <div style="font-size: 16px">${translatedName}</div>
+        <div style="font-size: 16px; color: #ccc;">${translatedDesc}</div>
+        <div style="font-size: 16px; color: #4eaaff;">${hoveredSite.url}</div>
+      `;
+            } else {
+                tooltip.style.display = "none";
+            }
+        }
+    });
+
+    canvas.addEventListener("mousedown", (event) => {
+        isDragging = true;
+        lastX = event.clientX;
+    });
+    canvas.addEventListener("mouseup", () => {
+        isDragging = false;
+    });
+    canvas.addEventListener("mouseleave", () => {
+        isDragging = false;
+    });
+
+    // 点击新闻站点打开链接
+    canvas.addEventListener("click", (event) => {
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = event.clientX - rect.left;
+        const mouseY = event.clientY - rect.top;
+        newsSites.forEach((site) => {
+            const pos = projection([site.lng, site.lat]);
+            if (!pos) return;
+            const [x, y] = pos;
+            const distance = Math.sqrt((mouseX - x) ** 2 + (mouseY - y) ** 2);
+            if (distance < 8) window.open(site.url, "_blank");
+        });
+    });
+
+    // 监听窗口尺寸变化，更新 Canvas 与投影参数
+    window.addEventListener("resize", () => {
+        width = container.clientWidth;
+        height = container.clientHeight;
+        canvas.width = width;
+        canvas.height = height;
+        projection.translate([width / 2, height / 2]).scale((Math.min(width, height) / 2) * 0.9);
+    });
+
+    // ========== 绘制与动画 ==========
+    // 主绘制函数，包含地球、昼夜、陆地及新闻站点标记（判断是否在正面显示）
+    function draw(land: any) {
+        context.clearRect(0, 0, width, height);
+
+        // 绘制整个球体
+        context.beginPath();
+        path({ type: "Sphere" } as any);
+        context.fillStyle = "#0b0b0b";
+        context.fill();
+
+        // 绘制昼夜分界
+        const sunPos = getSunPosition(new Date());
+        const terminator = d3.geoCircle().center([sunPos.lon, sunPos.lat]).radius(90)();
+        context.beginPath();
+        path(terminator);
+        context.fillStyle = "#a3d5ff";
+        context.fill();
+
+        // 绘制陆地轮廓
+        context.beginPath();
+        path(land);
+        context.fillStyle = "#222";
+        context.fill();
+        context.strokeStyle = "#555";
+        context.lineWidth = 0.5;
+        context.stroke();
+
+        // 绘制正面新闻站点标记
+        newsSites.forEach((site) => {
+            // 计算当前视角中心：取当前投影的旋转值
+            const currentRotate = projection.rotate();
+            const center: [number, number] = [-currentRotate[0], -currentRotate[1]];
+            const siteCoords: [number, number] = [site.lng, site.lat];
+            const geoDist = d3.geoDistance(siteCoords, center);
+            // 如果地理距离大于 90°，说明站点在背面，不绘制
+            if (geoDist > Math.PI / 2) return;
+
+            const coords = projection([site.lng, site.lat]);
+            if (!coords) return;
+            const [x, y] = coords;
+            // 仅绘制可见部分（保证在球面范围内）
+            const dx = x - width / 2;
+            const dy = y - height / 2;
+            if (Math.sqrt(dx * dx + dy * dy) > projection.scale()) return;
+
+            context.beginPath();
+            context.arc(x, y, 5, 0, 2 * Math.PI);
+            context.fillStyle = `rgba(255,0,0,${markerAlpha.toFixed(2)})`;
+            context.fill();
+        });
+    }
+
+    // 动画循环
+    function animate(land: any) {
+        function tick() {
+            draw(land);
+            animateMarkers();
+            requestAnimationFrame(tick);
+        }
+        tick();
+    }
+
+    // 加载世界地图数据后启动动画
+    d3.json("https://unpkg.com/world-atlas@2.0.2/countries-110m.json").then((worldData: any) => {
+        const land = topojson.feature(worldData, worldData.objects.land);
+        animate(land);
+    });
+</script>

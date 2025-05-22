@@ -1,0 +1,37 @@
+{
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+            "@type": "WebSite",
+            "@id": "https://www.mtranslator.dev/#website",
+            "name": "mTranslator",
+            "url": "https://www.mtranslator.dev",
+            "inLanguage": "ru",
+            "description": "mTranslator — это интеллектуальная платформа для перевода, основанная на передовых больших языковых моделях (LLM), созданная для преодоления языковых барьеров и обеспечения бесшовной глобальной коммуникации. mTranslator поддерживает несколько сценариев перевода: одновременный перевод веб‑страниц одним кликом, перевод субтитров в реальном времени, перевод текста в полях ввода и перевод документов в различных форматах."
+        },
+        {
+            "@type": "WebPage",
+            "@id": "https://www.mtranslator.dev/ru/#webpage",
+            "isPartOf": {
+                "@id": "https://www.mtranslator.dev/#website"
+            },
+            "name": "Главная - mTranslator",
+            "url": "https://www.mtranslator.dev/ru",
+            "inLanguage": "ru",
+            "logo": "https://static.mcopilot.io/mtranslator/logo.8ce8b671.svg",
+            "slogan": "The World, YOUR WORDS",
+            "description": "mTranslator — это интеллектуальная платформа для перевода, основанная на передовых больших языковых моделях (LLM), созданная для преодоления языковых барьеров и обеспечения бесшовной глобальной коммуникации. mTranslator поддерживает несколько сценариев перевода: одновременный перевод веб‑страниц одним кликом, перевод субтитров в реальном времени, перевод текста в полях ввода и перевод документов в различных форматах.",
+            "breadcrumb": {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "Главная",
+                        "item": "https://www.mtranslator.dev/ru"
+                    }
+                ]
+            }
+        }
+    ]
+}

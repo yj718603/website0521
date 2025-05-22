@@ -1,0 +1,282 @@
+@charset "UTF-8";
+
+/* ---------------------------------------------------------------
+   多语言、多字重、跨平台字体加载（Google CDN首选，自托管备选）
+   字重支持：400(Regular), 500(Medium), 700(Bold), 900(Black)
+-----------------------------------------------------------------*/
+
+/* 英文及拉丁语系字体 */
+@font-face {
+    font-family: "Noto Sans";
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+    src: url("/fonts/NotoSans-Regular-400.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Noto Sans";
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+    src: url("/fonts/NotoSans-Medium-500.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Noto Sans";
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+    src: url("/fonts/NotoSans-Bold-700.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Noto Sans";
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+    src: url("/fonts/NotoSans-Black-900.woff2") format("woff2");
+}
+
+/* 简体中文字体 */
+@font-face {
+    font-family: "Noto Sans SC";
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+    src: url("/fonts/NotoSansSC-Regular-400.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Noto Sans SC";
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+    src: url("/fonts/NotoSansSC-Medium-500.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Noto Sans SC";
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+    src: url("/fonts/NotoSansSC-Bold-700.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Noto Sans SC";
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+    src: url("/fonts/NotoSansSC-Black-900.woff2") format("woff2");
+}
+
+/* 繁体中文字体 */
+@font-face {
+    font-family: "Noto Sans TC";
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+    src: url("/fonts/NotoSansTC-Regular-400.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Noto Sans TC";
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+    src: url("/fonts/NotoSansTC-Medium-500.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Noto Sans TC";
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+    src: url("/fonts/NotoSansTC-Bold-700.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Noto Sans TC";
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+    src: url("/fonts/NotoSansTC-Black-900.woff2") format("woff2");
+}
+
+/* 日文 */
+@font-face {
+    font-family: "Noto Sans JP";
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+    src: url("/fonts/NotoSansJP-Regular-400.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Noto Sans JP";
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+    src: url("/fonts/NotoSansJP-Medium-500.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Noto Sans JP";
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+    src: url("/fonts/NotoSansJP-Bold-700.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Noto Sans JP";
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+    src: url("/fonts/NotoSansJP-Black-900.woff2") format("woff2");
+}
+
+/* 韩文 */
+@font-face {
+    font-family: "Noto Sans KR";
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+    src: url("/fonts/NotoSansKR-Regular-400.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Noto Sans KR";
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+    src: url("/fonts/NotoSansKR-Medium-500.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Noto Sans KR";
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+    src: url("/fonts/NotoSansKR-Bold-700.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Noto Sans KR";
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+    src: url("/fonts/NotoSansKR-Black-900.woff2") format("woff2");
+}
+
+/* 泰文 */
+@font-face {
+    font-family: "Noto Sans Thai";
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+    src: url("/fonts/NotoSansThai-Regular-400.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Noto Sans Thai";
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+    src: url("/fonts/NotoSansThai-Medium-500.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Noto Sans Thai";
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+    src: url("/fonts/NotoSansThai-Bold-700.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Noto Sans Thai";
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+    src: url("/fonts/NotoSansThai-Black-900.woff2") format("woff2");
+}
+
+/* 阿拉伯文 */
+@font-face {
+    font-family: "Noto Sans Arabic";
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+    src: url("/fonts/NotoSansArabic-Regular-400.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Noto Sans Arabic";
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+    src: url("/fonts/NotoSansArabic-Medium-500.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Noto Sans Arabic";
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+    src: url("/fonts/NotoSansArabic-Bold-700.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Noto Sans Arabic";
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+    src: url("/fonts/NotoSansArabic-Black-900.woff2") format("woff2");
+}
+
+/* 默认（英语、拉丁语系语言、俄语、希腊语） */
+body {
+    font-family: "Helvetica Neue", Helvetica, "Noto Sans", Arial, sans-serif;
+}
+
+:lang(en),
+:lang(es),
+:lang(fr),
+:lang(pt),
+:lang(de),
+:lang(it) {
+    font-family: "Helvetica Neue", Helvetica, "Noto Sans", Arial, sans-serif;
+}
+
+/* 简体中文 */
+:lang(zh-Hans),
+:lang(zh-CN),
+:lang(zh-SG) {
+    font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+}
+
+/* 繁体中文 */
+:lang(zh-Hant),
+:lang(zh-TW),
+:lang(zh-HK),
+:lang(zh-MO) {
+    font-family: "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+}
+
+/* 日语 */
+:lang(ja) {
+    font-family: "Hiragino Sans", "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif;
+}
+
+/* 韩语 */
+:lang(ko) {
+    font-family: "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+}
+
+/* 泰语 */
+:lang(th) {
+    font-family: "Thonburi", "Noto Sans Thai", "Tahoma", sans-serif;
+}
+
+/* 阿拉伯语 */
+:lang(ar),
+:lang(fa),
+:lang(ur) {
+    font-family: "Geeza Pro", "Noto Sans Arabic", "Dubai", "Arial", sans-serif;
+}
+
+/* 俄语（西里尔语系） */
+:lang(ru),
+:lang(uk),
+:lang(bg),
+:lang(sr),
+:lang(Cyrl) {
+    font-family: "Helvetica Neue", "Noto Sans", "Segoe UI", Arial, sans-serif;
+}
+
+/* 希腊语 */
+:lang(el),
+:lang(Grek) {
+    font-family: "Helvetica Neue", "Noto Sans", "Segoe UI", Arial, sans-serif;
+}

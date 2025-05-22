@@ -1,0 +1,37 @@
+{
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+            "@type": "WebSite",
+            "@id": "https://www.mtranslator.dev/#website",
+            "name": "mTranslator",
+            "url": "https://www.mtranslator.dev",
+            "inLanguage": "ja",
+            "description": "mTranslator は、最先端の大規模言語モデル（LLM）をコア技術としたインテリジェント翻訳プラットフォームで、言語の壁を打破し、世界中でシームレスなコミュニケーションを実現します。mTranslator は複数の翻訳シナリオに対応しています：ワンクリックのウェブページ翻訳、リアルタイム字幕翻訳、入力フィールド翻訳、さまざまな形式のドキュメント翻訳。"
+        },
+        {
+            "@type": "WebPage",
+            "@id": "https://www.mtranslator.dev/ja/#webpage",
+            "isPartOf": {
+                "@id": "https://www.mtranslator.dev/#website"
+            },
+            "name": "ホーム - mTranslator",
+            "url": "https://www.mtranslator.dev/ja",
+            "inLanguage": "ja",
+            "logo": "https://static.mcopilot.io/mtranslator/logo.8ce8b671.svg",
+            "slogan": "言の葉の戸開き",
+            "description": "mTranslator は、最先端の大規模言語モデル（LLM）をコア技術としたインテリジェント翻訳プラットフォームで、言語の壁を打破し、世界中でシームレスなコミュニケーションを実現します。mTranslator は複数の翻訳シナリオに対応しています：ワンクリックのウェブページ翻訳、リアルタイム字幕翻訳、入力フィールド翻訳、さまざまな形式のドキュメント翻訳。",
+            "breadcrumb": {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "ホーム",
+                        "item": "https://www.mtranslator.dev/ja"
+                    }
+                ]
+            }
+        }
+    ]
+}

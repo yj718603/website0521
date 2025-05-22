@@ -1,0 +1,38 @@
+{
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://www.mtranslator.dev/#website",
+        "name": "mTranslator",
+        "url": "https://www.mtranslator.dev",
+        "inLanguage": "de",
+        "description": "mTranslator ist eine intelligente Übersetzungsplattform, die auf fortschrittlichen großen Sprachmodellen (LLM) basiert und darauf abzielt, Sprachbarrieren zu überwinden und eine nahtlose globale Kommunikation zu ermöglichen. mTranslator unterstützt verschiedene Übersetzungsszenarien: Ein-Klick-Webseitenübersetzung, Echtzeit-Untertitelübersetzung, Übersetzung von Eingabefeldern sowie Dokumentenübersetzung in verschiedenen Formaten."
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://www.mtranslator.dev/de/#webpage",
+        "isPartOf": {
+                "@id": "https://www.mtranslator.dev/#website"
+            },
+        "name": "Startseite - mTranslator",
+        "url": "https://www.mtranslator.dev/de",
+        "inLanguage": "de",
+        "logo": "https://static.mcopilot.io/mtranslator/logo.8ce8b671.svg",
+        "slogan": "The World, YOUR WORDS",
+        "description": "mTranslator ist eine intelligente Übersetzungsplattform, die auf fortschrittlichen großen Sprachmodellen (LLM) basiert und darauf abzielt, Sprachbarrieren zu überwinden und eine nahtlose globale Kommunikation zu ermöglichen. mTranslator unterstützt verschiedene Übersetzungsszenarien: Ein-Klick-Webseitenübersetzung, Echtzeit-Untertitelübersetzung, Übersetzung von Eingabefeldern sowie Dokumentenübersetzung in verschiedenen Formaten.",
+        "breadcrumb": {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Startseite",
+              "item": "https://www.mtranslator.dev/de"
+            }
+          ]
+        }
+      }
+    ]
+  }
+  

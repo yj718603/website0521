@@ -1,0 +1,37 @@
+{
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+            "@type": "WebSite",
+            "@id": "https://www.mtranslator.dev/#website",
+            "name": "mTranslator",
+            "url": "https://www.mtranslator.dev",
+            "inLanguage": "zh-Hant",
+            "description": "mTranslator 是一款以先進大型語言模型（LLM）為核心技術的智能翻譯平台，旨在打破語言壁壘、實現全球無縫溝通。mTranslator 支援多種翻譯場景：一鍵翻譯網頁內容、即時字幕翻譯、輸入框內容翻譯以及多種格式文件翻譯。"
+        },
+        {
+            "@type": "WebPage",
+            "@id": "https://www.mtranslator.dev/zh-Hant/#webpage",
+            "isPartOf": {
+                "@id": "https://www.mtranslator.dev/#website"
+            },
+            "name": "首頁 - mTranslator",
+            "url": "https://www.mtranslator.dev/zh-Hant",
+            "inLanguage": "zh-Hant",
+            "logo": "https://static.mcopilot.io/mtranslator/logo.8ce8b671.svg",
+            "slogan": "天地萬象，方塊之間",
+            "description": "mTranslator 是一款以先進大型語言模型（LLM）為核心技術的智能翻譯平台，旨在打破語言壁壘、實現全球無縫溝通。mTranslator 支援多種翻譯場景：一鍵翻譯網頁內容、即時字幕翻譯、輸入框內容翻譯以及多種格式文件翻譯。",
+            "breadcrumb": {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                    {
+                        "@type": "ListItem",
+                        "position": 1,
+                        "name": "首頁",
+                        "item": "https://www.mtranslator.dev/zh-Hant"
+                    }
+                ]
+            }
+        }
+    ]
+}

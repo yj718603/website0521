@@ -1,0 +1,295 @@
+---
+import global from "../assets/global.svg";
+import { supportedLangs } from "../assets/config/supportedLangs.ts";
+
+const { locale } = Astro.params;
+
+// 根据浏览器语言在支持的语言列表中查找，如果没找到则回退到 supportedLangs[0] 或默认英文
+const selectedLang = supportedLangs.find((lang) => lang.code === locale) ||
+    supportedLangs[0] || { code: "en", name: "English" };
+---
+
+<script>
+    import { supportedLangs } from "../assets/config/supportedLangs.ts";
+    interface Language {
+        code: string;
+        name: string;
+    }
+    // 将服务端数据序列化成字符串，并在客户端解析，同时指定类型
+    const clientSupportedLangs: Language[] = JSON.parse(`${JSON.stringify(supportedLangs)}`);
+
+    document.addEventListener("DOMContentLoaded", () => {
+        // 获取 DOM 元素
+        const dropdown = document.querySelector(".language-dropdown") as HTMLElement | null;
+        const dropdownMenu = document.querySelector(".dropdown-menu") as HTMLUListElement | null;
+        const toggleButton = document.querySelector(".dropdown-toggle") as HTMLElement | null;
+        const currentLanguage = document.getElementById("current-language") as HTMLElement | null;
+
+        if (!dropdown || !dropdownMenu || !toggleButton || !currentLanguage) {
+            console.error("Dropdown menu or current language element not found!");
+            return;
+        }
+
+        // 获取鼠标离开事件的延时处理
+        let timeoutId: number | null = null;
+
+        // 鼠标进入时显示菜单
+        dropdown.addEventListener("mouseover", () => {
+            clearTimeout(timeoutId!);
+            dropdown.classList.add("open");
+        });
+
+        // 鼠标离开时延迟隐藏菜单，避免冲突
+        dropdown.addEventListener("mouseout", (event: MouseEvent) => {
+            const relatedNode = event.relatedTarget as Node | null;
+            if (!relatedNode || !dropdown.contains(relatedNode)) {
+                timeoutId = setTimeout(() => {
+                    dropdown.classList.remove("open");
+                }, 200); // 延时200ms后隐藏菜单，避免鼠标快速移动时菜单消失
+            }
+        });
+
+        // 根据 URL 中的语言代码更新选中状态
+        const pathLangCode = window.location.pathname.split("/")[1];
+        if (pathLangCode) {
+            const matchedLang = clientSupportedLangs.find((lang) => lang.code === pathLangCode);
+            if (matchedLang) {
+                currentLanguage.textContent = matchedLang.name;
+                dropdownMenu.querySelectorAll("li").forEach((li) => {
+                    li.classList.toggle("selected", li.getAttribute("data-langCode") === matchedLang.code);
+                });
+            }
+        } else {
+            // 否则，按服务器渲染的值（Cookie）
+            dropdownMenu.querySelectorAll("li").forEach((li) => {
+                li.classList.toggle("selected", li.getAttribute("data-langCode") === "${selectedLang.code}");
+            });
+        }
+        // 保存语言代码
+        // 选择时将语言代码保存到 cookie 中，如果失败，则保存在 localStorage 中
+        const saveLanguagePreference = (langCode: string) => {
+            try {
+                document.cookie = `preferredLanguage=${langCode}; path=/; max-age=31536000`;
+            } catch (err) {
+                localStorage.setItem("preferredLanguage", langCode);
+            }
+        };
+
+        // 点击按钮时切换菜单显示状态
+        toggleButton.addEventListener("click", (event) => {
+            event.stopPropagation();
+            dropdown.classList.toggle("open");
+        });
+
+        // 添加点击事件监听器
+        dropdownMenu.addEventListener("click", (event: MouseEvent) => {
+            event.stopPropagation();
+            const target = (event.target as Element).closest("li");
+            if (target && target.hasAttribute("data-langCode")) {
+                const selectedLangCode = target.getAttribute("data-langCode");
+                const selectedLangName = target.textContent?.trim();
+                if (selectedLangCode && selectedLangName) {
+                    // 同时更新按钮中文本和 data-langCode 属性
+                    currentLanguage.textContent = selectedLangName;
+                    currentLanguage.setAttribute("data-langCode", selectedLangCode);
+                    saveLanguagePreference(selectedLangCode);
+                    // 关闭菜单
+                    dropdown.classList.remove("open");
+                    // 重定向到对应语言的页面（假设路由前缀为语言代码）
+                    window.location.href = `/${selectedLangCode}`;
+                }
+            }
+        });
+        // 点击页面其他区域时关闭菜单
+        document.addEventListener("click", () => {
+            dropdown.classList.remove("open");
+        });
+    });
+</script>
+
+<div class="language-dropdown">
+    <button class="dropdown-toggle">
+        <div class="toggle-left" style="display: flex; align-items: center">
+            <img class="logo" src={global.src} alt="" />
+            <span
+                data-langCode={selectedLang.code}
+                class="current-language"
+                id="current-language"
+                style="font-weight: 400;">{selectedLang.name}</span
+            >
+        </div>
+        <div class="toggle-right">
+            <span class="icon-Vector" style="font-size: 0.5rem;"></span>
+        </div>
+    </button>
+
+    <ul class="dropdown-menu">
+        {
+            supportedLangs.map((lang) => (
+                <li data-langCode={lang.code} class={lang.code === selectedLang.code ? "selected" : ""}>
+                    <a href={`/${lang.code}`}>{lang.name}</a>
+                </li>
+            ))
+        }
+    </ul>
+</div>
+
+<style>
+    .language-dropdown {
+        position: relative; /* 相对定位用于显示下拉菜单 */
+        display: inline-block;
+        width: 12.5rem;
+        min-height: 2.75rem;
+        margin-right: 0.8125rem;
+    }
+    .language-dropdown span,
+    .dropdown-menu li {
+        font-size: 1rem;
+    }
+
+    .dropdown-toggle {
+        width: 100%;
+        color: inherit;
+        background-color: rgba(255, 255, 255, 1);
+        border-radius: 100px;
+        border: 1px solid #ddd; /* 按钮边框 */
+        padding: 0 0.8rem; /* 按钮内边距 */
+        cursor: pointer; /* 鼠标指针样式 */
+        display: flex; /* 按钮内元素水平排列 */
+        align-items: center; /* 垂直居中 */
+        display: flex;
+        justify-content: space-between;
+        transition:
+            background-color 0.3s,
+            box-shadow 0.3s; /* 添加过渡效果 */
+        max-height: 100%;
+    }
+
+    .dropdown-toggle .logo {
+        width: 1.25rem;
+        margin-left: 0.3125rem;
+        margin-right: 0.625rem;
+    }
+
+    .dropdown-toggle:hover {
+        background-color: #ffffff; /* 鼠标悬停时的背景色 */
+        border: 1px solid #7c3aed;
+    }
+
+    .dropdown-menu {
+        width: 100%;
+        visibility: hidden; /* 默认隐藏 */
+        opacity: 0; /* 默认为透明 */
+        position: absolute; /* 相对于父容器定位 */
+        left: 0; /* 左对齐 */
+        background-color: #ffffff; /* 菜单背景色 */
+        border: 1px solid #d9d9d9; /* 菜单边框 */
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* 添加菜单阴影 */
+        border-radius: 4px; /* 菜单圆角 */
+        min-width: 160px; /* 菜单最小宽度 */
+        list-style: none; /* 去掉列表的默认样式 */
+        padding: 0;
+        margin: 6px 0 0 0; /* 去掉上边距，稍微下移 */
+        z-index: 10; /* 确保菜单在顶层 */
+        transition:
+            opacity 0.2s ease,
+            visibility 0s 0.3s; /* 为显示和隐藏添加过渡效果 */
+    }
+
+    .dropdown-menu li {
+        line-height: 1.45rem;
+        padding: 10px 15px; /* 每个选项的内边距 */
+        cursor: pointer; /* 鼠标指针样式 */
+        color: #333; /* 默认文字颜色 */
+        font-size: 1rem; /* 字体大小 */
+        transition:
+            background-color 0.3s,
+            color 0.3s; /* 添加过渡效果 */
+    }
+    .dropdown-menu li a {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+    .dropdown-menu li:hover {
+        background-color: #ebe1fc;
+        color: #7c3aed;
+    }
+
+    /* 显示下拉菜单 */
+    .language-dropdown:hover .dropdown-menu {
+        visibility: visible;
+        opacity: 1;
+        transition:
+            opacity 0.2s ease,
+            visibility 0s; /* 添加显示时的过渡效果 */
+    }
+    .dropdown-menu li.selected {
+        color: #7c3aed;
+    }
+
+    /* --------------------------- */
+    /* 语言字体设置：为下拉菜单中的每个选项设置对应语言的字体 */
+    /* 英语及其他拉丁语系（例如：en, fr, es, de, it 等） */
+    .dropdown-menu li[data-langCode="en"] a,
+    .dropdown-menu li[data-langCode="fr"] a,
+    .dropdown-menu li[data-langCode="es"] a,
+    .dropdown-menu li[data-langCode="de"] a,
+    .dropdown-menu li[data-langCode="it"] a,
+    .toggle-left span[data-langCode="en"],
+    .toggle-left span[data-langCode="fr"],
+    .toggle-left span[data-langCode="es"],
+    .toggle-left span[data-langCode="de"],
+    .toggle-left span[data-langCode="it"] {
+        font-family: "Helvetica Neue", Helvetica, "Noto Sans", Arial, sans-serif;
+    }
+
+    /* 简体中文 */
+    .dropdown-menu li[data-langCode="zh-Hans"] a,
+    .toggle-left span[data-langCode="zh-Hans"] {
+        font-family: "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    }
+
+    /* 繁体中文 */
+    .dropdown-menu li[data-langCode="zh-Hant"] a,
+    .toggle-left span[data-langCode="zh-Hant"] {
+        font-family: "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    }
+
+    /* 日语 */
+    .dropdown-menu li[data-langCode="ja"] a,
+    .toggle-left span[data-langCode="ja"] {
+        font-family: "Hiragino Sans", "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif;
+    }
+
+    /* 韩语 */
+    .dropdown-menu li[data-langCode="ko"] a,
+    .toggle-left span[data-langCode="ko"] {
+        font-family: "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif;
+    }
+
+    /* 泰语 */
+    .dropdown-menu li[data-langCode="th"] a,
+    .toggle-left span[data-langCode="th"] {
+        font-family: "Thonburi", "Noto Sans Thai", "Tahoma", sans-serif;
+    }
+
+    /* 阿拉伯语 */
+    .dropdown-menu li[data-langCode="ar"] a,
+    .toggle-left span[data-langCode="ar"] {
+        font-family: "Geeza Pro", "Noto Sans Arabic", "Dubai", "Arial", sans-serif;
+    }
+
+    /* 俄语（西里尔字母） */
+    .dropdown-menu li[data-langCode="ru"] a,
+    .toggle-left span[data-langCode="ru"] {
+        font-family: "Helvetica Neue", "Noto Sans", "Segoe UI", Arial, sans-serif;
+    }
+
+    /* 希腊语 */
+    .dropdown-menu li[data-langCode="el"] a,
+    .toggle-left span[data-langCode="el"] {
+        font-family: "Helvetica Neue", "Noto Sans", "Segoe UI", Arial, sans-serif;
+    }
+</style>

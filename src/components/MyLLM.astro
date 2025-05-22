@@ -1,0 +1,117 @@
+---
+import mylogo from "../assets/logos/mylogo.svg";
+
+const { i18n, locale } = Astro.props;
+---
+
+<section class="sectionContainer mLLMContainer">
+    <div class="contentContainer">
+        <div class="content-left">
+            <h1 class="color-h1">mLLM</h1>
+            <h1 class="black-h1">Multi-Source Language Learning Model</h1>
+        </div>
+        <div class="content-right">
+            <img src={mylogo.src} alt="" />
+            <div class="border-content">
+                <div class="intro-content">
+                    <p>{i18n["mLLM.intro1"]}</p>
+                    <p>{i18n["mLLM.intro2"]}</p>
+                    <p>{i18n["mLLM.intro3"]}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .mLLMContainer {
+        display: flex;
+        height: 74%;
+        background: #ffffff;
+        justify-content: center;
+        align-items: center;
+        padding: 50px 0 50px 0;
+    }
+    .contentContainer {
+        width: 75%;
+        max-width: 1400px;
+        min-width: 1200px;
+        margin-bottom: 30px;
+        display: flex;
+        justify-content: space-around;
+    }
+    .content-left {
+        width: 50%;
+        min-width: 600px;
+    }
+    .color-h1 {
+        margin-top: 20px;
+        font-weight: 900;
+        font-size: 4rem;
+        line-height: 90px;
+        text-align: left;
+        font-style: normal;
+        text-transform: none;
+        color: #7c3aed;
+        background: linear-gradient(322.1844798085817deg, #7c3aed 0%, #f4439f 100%);
+
+        -webkit-background-clip: text; /* 让背景只裁剪到文字部分 */
+        -webkit-text-fill-color: transparent; /* 设置文字颜色为透明 */
+    }
+    .black-h1 {
+        font-weight: 900;
+        font-size: 4rem;
+        color: #111111;
+        line-height: 90px;
+        text-align: left;
+        font-style: normal;
+        text-transform: none;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    .content-right {
+        width: 50%;
+        margin-left: 75px;
+        display: inline;
+    }
+    .content-right img {
+        position: relative;
+        z-index: 99;
+        width: 150px;
+        height: 150px;
+        margin-left: -35px;
+    }
+    .border-content {
+        margin-top: -80px;
+        margin-left: 46px;
+        background: #ffffff;
+        position: relative; /* 为伪元素定位做准备 */
+        border-radius: 14px;
+        box-shadow: 0px 0px 30px 8px rgba(124, 58, 237, 0.2);
+        z-index: 1; /* 确保内容层级在边框之上 */
+    }
+    .border-content::before {
+        content: "";
+        position: absolute;
+        top: -4px; /* 模拟边框宽度 */
+        left: -4px; /* 模拟边框宽度 */
+        right: -4px; /* 模拟边框宽度 */
+        bottom: -4px; /* 模拟边框宽度 */
+        background: linear-gradient(45deg, rgba(124, 58, 237, 1), rgba(244, 67, 159, 1)); /* 渐变边框 */
+        border-radius: 14px; /* 保证边框有圆角 */
+        z-index: -1; /* 确保伪元素在内容下方 */
+    }
+    .intro-content {
+        background-color: #ffffff;
+        border-radius: 12px;
+        padding: 12px 40px;
+    }
+    .intro-content p {
+        font-size: 1.125rem;
+        color: #474359;
+        line-height: 27px;
+        text-align: left;
+        font-style: normal;
+        text-transform: none;
+    }
+</style>

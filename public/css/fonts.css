@@ -1,0 +1,73 @@
+@font-face {
+    font-family: "icomoon";
+    src: url("/fonts/icomoon.eot?n6sel2");
+    src: url("/fonts/icomoon.eot?n6sel2#iefix") format("embedded-opentype"),
+        url("/fonts/icomoon.ttf?n6sel2") format("truetype"), url("/fonts/icomoon.woff?n6sel2") format("woff"),
+        url("/fonts/icomoon.svg?n6sel2#icomoon") format("svg");
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+}
+
+[class^="icon-"],
+[class*=" icon-"] {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: "icomoon" !important;
+
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Enable Ligatures ================ */
+    letter-spacing: 0;
+    -webkit-font-feature-settings: "liga";
+    -moz-font-feature-settings: "liga=1";
+    -moz-font-feature-settings: "liga";
+    -ms-font-feature-settings: "liga" 1;
+    font-feature-settings: "liga";
+    -webkit-font-variant-ligatures: discretionary-ligatures;
+    font-variant-ligatures: discretionary-ligatures;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-Vector:before {
+    content: "\e904";
+}
+.icon-epub-icon:before {
+    content: "\e900";
+}
+.icon-docx-icon:before {
+    content: "\e901";
+}
+.icon-pdf-icon:before {
+    content: "\e902";
+}
+.icon-screenshot-icon:before {
+    content: "\e903";
+}
+.icon-quill:before {
+    content: "\e907";
+}
+.icon-enlarge:before {
+    content: "\e989";
+}
+.icon-shrink:before {
+    content: "\e98a";
+}
+.icon-enlarge2:before {
+    content: "\e98b";
+}
+.icon-shrink2:before {
+    content: "\e98c";
+}
+.icon-arrow-right2:before {
+    content: "\ea3c";
+}
+.icon-arrow-left2:before {
+    content: "\ea40";
+}

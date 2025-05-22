@@ -1,0 +1,169 @@
+---
+import commingsoon from "../assets/commingsoon.svg";
+
+const { i18n, locale } = Astro.props;
+
+const svgs = import.meta.glob("../assets/titles/*_more_features.svg", { as: "raw" });
+const fileName = `${locale}_more_features.svg`;
+
+let svgContent = "";
+
+// 找到匹配当前 locale 的 SVG
+for (const path in svgs) {
+    if (path.includes(fileName)) {
+        svgContent = await svgs[path]();
+        break;
+    }
+}
+
+// 如果没找到，则尝试英文版本
+if (!svgContent) {
+    for (const path in svgs) {
+        if (path.includes("en_more_features.svg")) {
+            svgContent = await svgs[path]();
+            break;
+        }
+    }
+}
+---
+
+<section class="sectionContainer moreTools">
+    <section class="title">
+        <div class="svgContainer" set:html={svgContent} />
+    </section>
+    <section class="tool-cards-group">
+        <section class="tool-card">
+            <div class="card-top">
+                <div class="icon-bg">
+                    <span class="icon-screenshot-icon"></span>
+                </div>
+                <img src={commingsoon.src} alt="" class="comming" />
+            </div>
+            <div class="intro-content">
+                <h2>{i18n["tool.screenshot.title"]}</h2>
+                <p>{i18n["tool.screenshot.p"]}</p>
+            </div>
+        </section>
+        <section class="tool-card">
+            <div class="card-top">
+                <div class="icon-bg">
+                    <span class="icon-pdf-icon"></span>
+                </div>
+                <img src={commingsoon.src} alt="" class="comming" />
+            </div>
+            <div class="intro-content">
+                <h2>{i18n["tool.pdf.title"]}</h2>
+                <p>{i18n["tool.pdf.p"]}</p>
+            </div>
+        </section>
+        <section class="tool-card">
+            <div class="card-top">
+                <div class="icon-bg">
+                    <span class="icon-docx-icon"></span>
+                </div>
+                <img src={commingsoon.src} alt="" class="comming" />
+            </div>
+            <div class="intro-content">
+                <h2>{i18n["tool.docx.title"]}</h2>
+                <p>{i18n["tool.docx.p"]}</p>
+            </div>
+        </section>
+        <section class="tool-card">
+            <div class="card-top">
+                <div class="icon-bg">
+                    <span class="icon-epub-icon"></span>
+                </div>
+                <img src={commingsoon.src} alt="" class="comming" />
+            </div>
+            <div class="intro-content">
+                <h2>{i18n["tool.epub.title"]}</h2>
+                <p>{i18n["tool.epub.p"]}</p>
+            </div>
+        </section>
+    </section>
+</section>
+
+<style>
+    .moreTools {
+        width: 100%;
+        background: linear-gradient(180deg, #fcfcff 0%, #fdfcff 33%, #f0ebfd 100%);
+        border-radius: 0px 0px 0px 0px;
+    }
+
+    .tool-cards-group {
+        margin-top: 60px;
+        margin-bottom: 110px;
+        display: flex;
+        gap: 31px;
+    }
+    .tool-card {
+        width: 23.6%;
+        max-height: 310px;
+        background: #ffffff;
+        border-radius: 8px 8px 8px 8px;
+        border: 1px solid #e3e3e3;
+    }
+
+    .icon-bg {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 59px;
+        height: 59px;
+        margin-top: 25px;
+        margin-left: 20px;
+        background: rgba(235, 225, 252, 1);
+        border: 1px solid #e3e3e3;
+        border-radius: 50%;
+    }
+
+    .icon-bg span {
+        font-size: 30px;
+        color: #7c3aed;
+    }
+    .card-top {
+        display: flex;
+        justify-content: space-between;
+        height: 100px;
+    }
+    .comming {
+        width: 100px;
+        height: 100px;
+        position: relative;
+        right: 0;
+    }
+    .intro-content {
+        max-width: 320px;
+        margin: 0 20px 25px 20px;
+    }
+    .intro-content h2 {
+        color: #12141d;
+        line-height: 28px;
+        text-align: left;
+        font-style: normal;
+        text-transform: none;
+        margin: 10px 0;
+    }
+    .intro-content p {
+        color: #8a8a8a;
+        line-height: 22px;
+    }
+    .tool-card:hover {
+        background-color: #7c3aed;
+        color: #7c3aed;
+        transition: color 0.1s ease;
+    }
+    .tool-card:hover .icon-bg {
+        background-color: #ffffff;
+    }
+    .tool-card:hover .intro-content h2 {
+        color: #ffffff;
+    }
+    .tool-card:hover .intro-content p {
+        color: #dddddd;
+    }
+    .tool-card:hover .comming {
+        display: none;
+        transition: color 0.1s ease;
+    }
+</style>

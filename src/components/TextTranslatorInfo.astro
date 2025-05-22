@@ -1,0 +1,332 @@
+---
+import mockup from "../assets/images/Mockup@2x.png";
+import exampleText from "../assets/images/phoneExampleText.png";
+
+import myLogo from "../assets/logos/mylogo.svg";
+import openaiLogo from "../assets/logos/openai-logo.svg";
+import claudeLogo from "../assets/logos/claude-logo.svg";
+import deepseekLogo from "../assets/logos/deepseek-logo.svg";
+import geminiLogo from "../assets/logos/gemini-logo.svg";
+import googleTransLogo from "../assets/logos/googleTrans-logo.svg";
+import llamaLogo from "../assets/logos/llama-logo.svg";
+import microsoftLogo from "../assets/logos/microsoft-logo.svg";
+import tongyiLogo from "../assets/logos/tongyi-logo.svg";
+import xaiLogo from "../assets/logos/xai-logo.svg";
+
+const engineLogos = [
+    { src: myLogo.src, alt: "mTranslator" },
+    { src: openaiLogo.src, alt: "openai" },
+    { src: microsoftLogo.src, alt: "microsoft" },
+    { src: geminiLogo.src, alt: "gemini" },
+    { src: claudeLogo.src, alt: "claude" },
+    { src: llamaLogo.src, alt: "LLama" },
+    { src: tongyiLogo.src, alt: "tongyiqianwen" },
+    { src: deepseekLogo.src, alt: "deepseek" },
+    { src: googleTransLogo.src, alt: "googletranslator" },
+    { src: xaiLogo.src, alt: "XAI" },
+];
+
+const { i18n, locale } = Astro.props;
+const svgs = import.meta.glob<string>("../assets/titles/*_text_translation.svg", {
+    query: "?raw",
+    import: "default",
+});
+const fileName = `${locale}_text_translation.svg`;
+
+let svgContent = "";
+
+// 找到匹配当前 locale 的 SVG
+for (const path in svgs) {
+    if (path.includes(fileName)) {
+        svgContent = await svgs[path]();
+        break;
+    }
+}
+
+// 如果没找到，则尝试英文版本
+if (!svgContent) {
+    for (const path in svgs) {
+        if (path.includes("en_text_translation.svg")) {
+            svgContent = await svgs[path]();
+            break;
+        }
+    }
+}
+---
+
+<section class="sectionContainer">
+    <section class="title">
+        <div class="svgContainer" set:html={svgContent} />
+    </section>
+
+    <section class="introContent">
+        <p set:html={i18n["text.p"]} />
+    </section>
+    <div class="fullsizeLink">
+        <a href="">{i18n["text.button"]}</a>
+    </div>
+    <div class="image-container">
+        <img src={mockup.src} alt="" class="mockup" />
+
+        <div class="scroll-wrapper">
+            <div class="image-track">
+                <img src={exampleText.src} alt="mTranslator" class="exampleText" id="center-1" />
+                <img src={exampleText.src} alt="openai" class="exampleText" id="center-2" />
+                <img src={exampleText.src} alt="microsoft" class="exampleText" id="center-3" />
+                <img src={exampleText.src} alt="gemini" class="exampleText" id="center-4" />
+                <img src={exampleText.src} alt="claude" class="exampleText" id="center-5" />
+                <img src={exampleText.src} alt="LLama" class="exampleText" id="center-6" />
+            </div>
+        </div>
+    </div>
+
+    <div class="scroll-wrapper-bar">
+        <!-- 按钮部分 -->
+
+        <button class="scroll-btn engin-logo"><img src={openaiLogo.src} alt="openai" /></button>
+        <button class="scroll-btn engin-logo"><img src={geminiLogo.src} alt="gemini" /></button>
+        <button class="scroll-btn engin-logo"><img src={myLogo.src} alt="mTranslator" /></button>
+        <button class="scroll-btn engin-logo"><img src={deepseekLogo.src} alt="deepseek" /></button>
+        <button class="scroll-btn engin-logo"><img src={tongyiLogo.src} alt="tongyiqianwen" /></button>
+        <button class="scroll-btn engin-logo"><img src={claudeLogo.src} alt="claude" /></button>
+    </div>
+</section>
+
+<style>
+    .image-container {
+        position: relative; /* 为伪元素提供相对定位基础 */
+        width: 100%; /* 全宽 */
+        min-height: 950px;
+        overflow: hidden; /* 超出部分隐藏 */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .introContent {
+        width: 67%;
+        max-width: 1280px;
+    }
+    .mockup {
+        position: absolute;
+        width: 395px;
+        height: auto;
+        box-shadow: 0px 30px 60px 0px rgba(99, 56, 173, 0.4);
+        border-radius: 65px;
+        margin: 10px 0;
+        z-index: 10;
+    }
+
+    .scroll-wrapper {
+        display: flex;
+        align-items: center;
+        overflow: hidden;
+        position: relative;
+        width: 100%;
+    }
+
+    .image-track {
+        display: flex;
+        /* 基础间距 */
+        gap: 10px;
+        transition: transform 0.2s ease;
+        will-change: transform;
+        border-radius: 65px;
+        /* 为了让整个 track 内部内容能居中整体偏移，我们后续采用 JS 计算 transform */
+    }
+    .image-track img {
+        width: 360px; /* 每张图片宽度 */
+        height: 780px;
+        flex-shrink: 0; /* 防止图片被压缩 */
+        background: linear-gradient(180deg, #f2ebfd 0%, #ffffff 100%);
+        box-shadow:
+            0px 9px 28px 8px rgba(124, 58, 237, 0.05),
+            0px 6px 16px 0px rgba(0, 0, 0, 0.08),
+            0px 3px 6px -4px rgba(0, 0, 0, 0.12);
+        border-radius: 24px 24px 24px 24px;
+        border: 1px solid #d9d9d9;
+    }
+
+    /* 定义一个空白占位元素（dummy spacer），默认没有宽度 */
+    .extra-gap {
+        flex: 0 0 0px;
+    }
+
+    .image-container::before,
+    .image-container::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 40px;
+        height: 100%;
+        pointer-events: none;
+        z-index: 10;
+    }
+    /* 左侧模糊 */
+    .image-container::before {
+        left: 0;
+        background: linear-gradient(to right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+    }
+
+    /* 右侧模糊 */
+    .image-container::after {
+        right: 0;
+        background: linear-gradient(to left, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+    }
+
+    /* 隐藏滚动条（可选） */
+    .scroll-wrapper::-webkit-scrollbar {
+        display: none; /* 隐藏滚动条 */
+    }
+    .scroll-wrapper {
+        -ms-overflow-style: none; /* IE */
+        scrollbar-width: none; /* Firefox */
+    }
+    .exampleText {
+        width: 360px;
+        background: #ffffff;
+        box-shadow:
+            0px 9px 28px 8px rgba(124, 58, 237, 0.05),
+            0px 6px 16px 0px rgba(0, 0, 0, 0.08),
+            0px 3px 6px -4px rgba(0, 0, 0, 0.12);
+        border-radius: 24px;
+        opacity: 25%;
+        transition:
+            transform 0.2s ease,
+            opacity 0.2s ease;
+    }
+    /* 当图片被选中时立即加大 scale，但不改变透明度 */
+    .exampleText.selected {
+        transform: scale(1.05);
+    }
+
+    /* 平移完成后添加 centered 类，使图片变为全不透明 */
+    .exampleText.centered {
+        opacity: 100%;
+    }
+    .exampleText.active {
+        opacity: 100%;
+    }
+    .scroll-wrapper-bar {
+        margin-bottom: 100px;
+        min-width: 340px;
+        height: 56px;
+        background: #e8e8ed;
+        border-radius: 100px 100px 100px 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+    .engin-logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        background-size: cover;
+        border-radius: 50%;
+        border: none;
+        background-color: #e8e8ed;
+        background-size: contain;
+        border-radius: 50%;
+    }
+
+    .engin-logo.active {
+        background-color: #fff;
+    }
+
+    .engin-logo:hover {
+        background-color: rgba(255, 255, 255, 0.4);
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // 使用泛型指定图片、按钮、容器的类型
+        const images = document.querySelectorAll<HTMLImageElement>(".image-track img");
+        const buttons = document.querySelectorAll<HTMLButtonElement>(".scroll-btn.engin-logo");
+        const imageTrack = document.querySelector<HTMLDivElement>(".image-track");
+        const scrollWrapper = document.querySelector<HTMLDivElement>(".scroll-wrapper");
+
+        if (!imageTrack || !scrollWrapper) return;
+
+        const extraGap = 90; // 选中的图片额外增加的间距
+
+        // 移除之前插入的所有额外占位元素
+        const removeExtraGaps = (): void => {
+            document.querySelectorAll<HTMLDivElement>(".extra-gap").forEach((el) => el.remove());
+        };
+
+        const updateImagePosition = (index: number): void => {
+            if (images.length === 0) return;
+
+            // 先移除之前插入的额外占位元素
+            removeExtraGaps();
+
+            // 移除所有图片的状态和缩放效果
+            images.forEach((img) => {
+                img.classList.remove("selected", "centered");
+                img.style.transform = "scale(1)";
+            });
+
+            // 更新按钮选中状态
+            buttons.forEach((btn, idx) => {
+                if (idx === index) {
+                    btn.classList.add("active");
+                } else {
+                    btn.classList.remove("active");
+                }
+            });
+
+            const activeImage = images[index];
+            if (!activeImage) return;
+
+            // 为目标图片添加 selected 状态（产生 scale 效果）
+            activeImage.classList.add("selected");
+
+            // 在选中图片左右各插入一个额外的占位元素，增加 gap
+            const spacerBefore = document.createElement("div");
+            spacerBefore.className = "extra-gap";
+            spacerBefore.style.flex = `0 0 ${extraGap / 2}px`;
+
+            const spacerAfter = document.createElement("div");
+            spacerAfter.className = "extra-gap";
+            spacerAfter.style.flex = `0 0 ${extraGap / 2}px`;
+
+            imageTrack.insertBefore(spacerBefore, activeImage);
+            if (activeImage.nextSibling) {
+                imageTrack.insertBefore(spacerAfter, activeImage.nextSibling);
+            } else {
+                imageTrack.appendChild(spacerAfter);
+            }
+
+            // 计算偏移量，使选中的图片居中显示
+            const trackRect = imageTrack.getBoundingClientRect();
+            const wrapperRect = scrollWrapper.getBoundingClientRect();
+            const activeRect = activeImage.getBoundingClientRect();
+            const activeCenterRelativeToTrack = (activeRect.left + activeRect.right) / 2 - trackRect.left;
+            const desiredOffset = wrapperRect.width / 2 - activeCenterRelativeToTrack;
+            imageTrack.style.transform = `translateX(${desiredOffset}px)`;
+
+            // 等待 imageTrack transform 过渡结束后，添加 .centered 类（使图片 opacity 变为 100%）
+            const onTransitionEnd = (event: TransitionEvent): void => {
+                if (event.propertyName === "transform") {
+                    activeImage.classList.add("centered");
+                    imageTrack.removeEventListener("transitionend", onTransitionEnd);
+                }
+            };
+            imageTrack.addEventListener("transitionend", onTransitionEnd);
+        };
+
+        // 仅绑定按钮点击事件切换图片
+        buttons.forEach((btn, index) => {
+            btn.addEventListener("click", () => {
+                updateImagePosition(index);
+            });
+        });
+
+        // 初始化：显示第四张图片（index 为 2）
+        updateImagePosition(2);
+    });
+</script>

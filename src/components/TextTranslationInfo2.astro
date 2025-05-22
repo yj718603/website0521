@@ -1,0 +1,175 @@
+---
+import ulVector from "../assets/ulVector.svg";
+
+const { i18n, locale } = Astro.props;
+
+const svgs = import.meta.glob<string>("../assets/titles/*_text_translation.svg", {
+    query: "?raw",
+    import: "default",
+});
+const fileName = `${locale}_text_translation.svg`;
+let svgContent = "";
+// 找到匹配当前 locale 的 SVG
+for (const path in svgs) {
+    if (path.includes(fileName)) {
+        svgContent = await svgs[path]();
+        break;
+    }
+}
+// 如果没找到，则尝试英文版本
+if (!svgContent) {
+    for (const path in svgs) {
+        if (path.includes("en_text_translation.svg")) {
+            svgContent = await svgs[path]();
+            break;
+        }
+    }
+}
+
+// 语言与图片前缀映射（共11种语言）
+const languageMap: Record<string, string> = {
+    en: "English",
+    es: "Spanish",
+    fr: "French",
+    de: "German",
+    it: "Italian",
+    ja: "Japanese",
+    ko: "Korean",
+    ru: "Russian",
+    pt: "Portuguese",
+    "zh-Hans": "sc",
+    "zh-Hant": "tc",
+};
+
+const languagePrefix = languageMap[locale] || languageMap["en"];
+const baseName = `${languagePrefix}_textTranslator`;
+const imageModules = import.meta.glob<{ default: { src: string } }>("../assets/images/*_textTranslator*", {
+    eager: true,
+});
+
+// 构造图片路径，png 与 webp 各有1x, 2x, 3x版本
+const png1x = imageModules[`../assets/images/${baseName}.png`]?.default.src;
+const png2x = imageModules[`../assets/images/${baseName}@2x.png`]?.default.src;
+const png3x = imageModules[`../assets/images/${baseName}@3x.png`]?.default.src;
+
+const webp1x = imageModules[`../assets/images/${baseName}.webp`]?.default.src;
+const webp2x = imageModules[`../assets/images/${baseName}@2x.webp`]?.default.src;
+const webp3x = imageModules[`../assets/images/${baseName}@3x.webp`]?.default.src;
+---
+
+<section class="sectionContainer textTranslatorInfo">
+    <div class="title">
+        <div class="svgContainer" set:html={svgContent} />
+    </div>
+
+    <div class="introContainer">
+        <div class="left-part">
+            <picture>
+                <source srcset={`${webp1x} 1x, ${webp2x} 2x, ${webp3x} 3x`} type="image/webp" />
+                <source srcset={`${png1x} 1x, ${png2x} 2x, ${png3x} 3x`} type="image/png" />
+                <img src={png1x} alt="textTranslator" />
+            </picture>
+        </div>
+
+        <div class="right-part">
+            <ul class="introUl">
+                <li>
+                    <div class="li_item">
+                        <img src={ulVector.src} class="ul_img" alt="" />
+                        <div>
+                            <span class="ul_title" set:html={i18n["ul_title1"]} />
+                            <span class="li_text" set:html={i18n["li_text1"]} />
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="li_item">
+                        <img src={ulVector.src} alt="" />
+                        <div>
+                            <span class="ul_title" set:html={i18n["ul_title2"]} />
+                            <span class="li_text" set:html={i18n["li_text2"]} />
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="li_item">
+                        <img src={ulVector.src} alt="" />
+                        <div>
+                            <span class="ul_title" set:html={i18n["ul_title3"]} />
+                            <span class="li_text" set:html={i18n["li_text3"]} />
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <div class="fullsizeLink">
+                <a href="">{i18n["text.button"]}</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .textTranslatorInfo {
+        width: 100%;
+        background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 66%, rgba(124, 58, 237, 0.1) 100%);
+    }
+    .introContainer {
+        width: 100%;
+        min-height: 600px;
+        display: flex;
+        justify-content: center;
+        margin-top: 50px;
+        margin-bottom: 120px;
+        gap: 160px;
+    }
+    .introUl {
+        padding: 0;
+    }
+
+    .introUl li {
+        display: block;
+        font-size: 1.25rem;
+        line-height: 30px;
+        margin-bottom: 24px;
+    }
+    .li_item {
+        display: flex;
+        align-items: flex-start;
+    }
+    .li_text {
+        color: #5e5e5e;
+        font-weight: 400;
+    }
+    .ul_title {
+        color: #1b1b1b;
+        font-weight: 700;
+    }
+    .introUl img {
+        width: 1.625rem;
+        height: auto;
+        margin-right: 10px;
+    }
+    .left-part {
+        width: 35%;
+    }
+    .left-part img {
+        width: 100%;
+    }
+    .right-part {
+        width: 35%;
+    }
+
+    .exampleText {
+        width: 360px;
+        background: #ffffff;
+        box-shadow:
+            0px 9px 28px 8px rgba(124, 58, 237, 0.05),
+            0px 6px 16px 0px rgba(0, 0, 0, 0.08),
+            0px 3px 6px -4px rgba(0, 0, 0, 0.12);
+        border-radius: 24px;
+        opacity: 25%;
+        transition:
+            transform 0.2s ease,
+            opacity 0.2s ease;
+    }
+</style>

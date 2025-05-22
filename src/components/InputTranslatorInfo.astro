@@ -1,0 +1,88 @@
+---
+const { i18n, locale } = Astro.props;
+
+const svgs = import.meta.glob<string>("../assets/titles/*_input_translation.svg", {
+    query: "?raw",
+    import: "default",
+});
+const fileName = `${locale}_input_translation.svg`;
+let svgContent = "";
+
+// 找到匹配当前 locale 的 SVG
+for (const path in svgs) {
+    if (path.includes(fileName)) {
+        svgContent = await svgs[path]();
+        break;
+    }
+}
+
+// 如果没找到，则尝试英文版本
+if (!svgContent) {
+    for (const path in svgs) {
+        if (path.includes("en_input_translation.svg")) {
+            svgContent = await svgs[path]();
+            break;
+        }
+    }
+}
+
+// 动态加载视频，根据 locale 选择对应的视频（格式为 mov）
+const videos = import.meta.glob("../assets/video/*_inputTranslator.mp4", { eager: true });
+const videoFileName = `${locale}_inputTranslator.mp4`;
+let videoSrc = "";
+
+// 找到匹配当前 locale 的视频
+for (const path in videos) {
+    if (path.includes(videoFileName)) {
+        videoSrc = (videos[path] as { default: string }).default;
+        break;
+    }
+}
+
+// 如果没找到，则尝试英文版本
+if (!videoSrc) {
+    for (const path in videos) {
+        if (path.includes("en_inputTranslator.mp4")) {
+            videoSrc = (videos[path] as { default: string }).default;
+            break;
+        }
+    }
+}
+---
+
+<section class="sectionContainer inputTranslator">
+    <section class="title">
+        <div class="svgContainer" set:html={svgContent} />
+    </section>
+    <section class="introContent">
+        <p set:html={i18n["input.p"]} />
+    </section>
+    <section class="gifContainer">
+        <video autoplay loop muted playsinline>
+            <source src={videoSrc} type="video/mp4" />
+            Your browser does not support the video tag.
+        </video>
+    </section>
+</section>
+
+<style>
+    .inputTranslator {
+        background-color: #f5f7fe;
+    }
+    .gifContainer {
+        height: 675px;
+        margin-top: 50px;
+        margin-bottom: 150px;
+    }
+    .gifContainer video {
+        width: 100%;
+        max-width: 1200px;
+        object-fit: scale-down;
+        box-shadow: 0px 0px 42px 0px rgba(97, 57, 161, 0.25);
+        border-radius: 20px 20px 20px 20px;
+    }
+    .introContent {
+        width: 67%;
+        max-width: 1280px;
+    }
+</style>

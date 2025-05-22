@@ -1,0 +1,77 @@
+#nav-web {
+    position: absolute;
+    top: 20px;
+    z-index: 9999;
+    width: 72.917%;
+    /* min-width: 1080px; */
+    height: 4.25rem;
+    margin-left: 13.5415%;
+    background-color: #ffffff;
+    box-shadow: 0px 6px 16px 0px rgba(0, 0, 0, 0.2);
+    border-radius: 100px 100px 100px 100px;
+    border: 1px solid #d9d9d9;
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+.logo {
+    height: 2.5rem;
+    margin-right: 1.25rem;
+}
+#nav-left {
+    display: flex;
+    align-items: center;
+    height: 2.75rem;
+}
+#nav-left a {
+    text-decoration: none;
+    color: #1b1b1b;
+    margin: 0 1.25rem;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1;
+}
+#nav-left a:hover {
+    color: #7c3aed;
+}
+#nav-right {
+    display: flex;
+    align-items: center;
+    height: 2.75rem;
+}
+#nav-right a:hover {
+    background: rgba(124, 58, 237, 0.15) rgba(0, 0, 0, 0.05);
+}
+
+#textTranslateLogo {
+    width: 2.75rem;
+    margin-right: 0.8125rem;
+}
+
+/* 当前语言显示的样式 */
+
+#noDarkModel {
+    width: 2.75rem;
+}
+#current-language {
+    font-weight: bold; /* 加粗当前语言文字 */
+    color: #333; /* 默认文字颜色 */
+}
+#loginButton {
+    width: 7.5rem;
+    height: 2.75rem;
+    background: rgba(124, 58, 237, 1);
+    border-radius: 100px 100px 100px 100px;
+    color: #ffffff;
+    border: none;
+    font-size: 1rem;
+    font-weight: 500;
+}
+#loginButton:hover {
+    background: rgba(105, 49, 201, 1);
+}
+.nav-links {
+    min-width: 500px;
+    display: inline-block;
+}

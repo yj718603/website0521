@@ -1,0 +1,59 @@
+---
+import mTranslatorLogo from "../assets/Logo.svg";
+import noDark from "../assets/noDark.svg";
+import textTranslate from "../assets/textTranslate.svg";
+import "../styles/navbar.css";
+import LanguagesDropdown from "./LanguagesDropdown.astro";
+
+const { i18n, locale } = Astro.props;
+---
+
+<script>
+    import textTranslate from "../assets/textTranslate.svg";
+    import hoverTextTranslate from "../assets/textTranslate_hover.svg";
+    import noDark from "../assets/noDark.svg";
+    import hoverNoDark from "../assets/noDark_hover.svg";
+
+    // 定义通用的 hover 逻辑函数
+    function addHoverEffect(elementId: string, normalSrc: string, hoverSrc: string): void {
+        document.addEventListener("DOMContentLoaded", () => {
+            const element = document.getElementById(elementId) as HTMLImageElement | null;
+
+            if (element) {
+                // 绑定鼠标移入事件
+                element.parentElement?.addEventListener("mouseover", () => {
+                    element.src = hoverSrc;
+                });
+
+                // 绑定鼠标移出事件
+                element.parentElement?.addEventListener("mouseout", () => {
+                    element.src = normalSrc;
+                });
+            }
+        });
+    }
+
+    // 应用通用函数
+    addHoverEffect("textTranslateLogo", textTranslate.src, hoverTextTranslate.src);
+    addHoverEffect("noDarkModel", noDark.src, hoverNoDark.src);
+</script>
+
+<div id="nav-web">
+    <div id="nav-left">
+        <img class="logo" src={mTranslatorLogo.src} alt="" />
+        <div class="nav-links">
+            <a href="/">{i18n["nav.pricing"]}</a>
+            <a href="/">{i18n["nav.download"]}</a>
+            <a href="/">{i18n["nav.resource"]}</a>
+        </div>
+    </div>
+
+    <div id="nav-right">
+        <a href={`https://app.mtranslator.dev?hl=${locale}`} target="_blank" rel="noopener noreferrer">
+            <img id="textTranslateLogo" src={textTranslate.src} alt="" />
+        </a>
+        <LanguagesDropdown />
+        <img id="noDarkModel" class="logo" src={noDark.src} alt="" />
+        <button id="loginButton">{i18n["register"]}</button>
+    </div>
+</div>

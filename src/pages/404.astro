@@ -1,0 +1,70 @@
+---
+import img404 from "../assets/404.svg";
+
+// 提取 URL 中的语言代码，比如 /en/ 或 /zh
+const url = new URL(Astro.request.url);
+
+// 假设 URL 格式为 /{locale}/...，取第一个路径段
+const locale = url.pathname.split("/")[1] || "en";
+
+import translations from "../locales/i18n.json";
+
+const i18n = translations[locale as keyof typeof translations] || translations["en"];
+// 动态生成每个语言版本页面
+export async function getStaticPaths() {
+    return Object.keys(translations).map((lang) => ({
+        params: { locale: lang },
+    }));
+}
+---
+
+<html lang={locale}>
+    <head>
+        <meta charset="UTF-8" />
+        <title set:html={i18n["title404"]} />
+    </head>
+    <body>
+        <div class="sectionContainer">
+            <img src={img404.src} alt="404" />
+            <p>{i18n["message404"]}</p>
+            <div class="fullsizeLink">
+                <a href="/">{i18n["button404"]}</a>
+            </div>
+        </div>
+    </body>
+</html>
+
+<style>
+    .sectionContainer {
+        width: 100%;
+        min-width: 1200px;
+        height: auto;
+        min-height: 1000px;
+        display: flex;
+        flex-direction: column; /* 从上到下排列 */
+        align-items: center; /* 水平居中 */
+        justify-content: center; /* 垂直居中，可选 */
+        gap: 10px; /* 可选：设置各元素之间的间距 */
+    }
+    .fullsizeLink {
+        background-color: rgba(124, 58, 237, 1);
+        border-radius: 4px;
+        border: none;
+        width: 12.5rem;
+        height: 3.75rem;
+        display: flex; /* 使用 flexbox 布局 */
+        align-items: center; /* 垂直居中 */
+        justify-content: center; /* 水平居中 */
+        margin-top: 20px;
+    }
+    .fullsizeLink a {
+        color: rgba(255, 255, 255, 1);
+        font-size: 1.25rem;
+        font-style: normal;
+        text-decoration: none;
+    }
+    .fullsizeLink:hover {
+        background-color: rgba(105, 49, 201, 1);
+        color: rgba(255, 255, 255, 1);
+    }
+</style>

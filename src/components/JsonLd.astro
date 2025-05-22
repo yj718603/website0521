@@ -1,0 +1,11 @@
+---
+// 要求传入完整的 JSON‑LD 对象
+export interface Props {
+    json: Record<string, unknown>;
+}
+const { json } = Astro.props;
+// 把对象序列化成字符串
+const script = JSON.stringify(json);
+---
+
+<script type="application/ld+json" set:html={script} />

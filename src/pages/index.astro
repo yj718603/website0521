@@ -1,0 +1,40 @@
+---
+export const prerender = false; // 关闭预渲染，以便在服务器端获取请求头
+import { supportedLangs } from "../assets/config/supportedLangs.ts";
+import { preprocessLanguageCode } from "../lib/langHelper";
+
+let targetLang: string | undefined = undefined;
+
+const langCodeInCookies = Astro.cookies.get("preferredLanguage"); // 通过 cookis 获取用户设置的语言
+
+if (langCodeInCookies) {
+    targetLang = supportedLangs.find((lang) => lang.code === langCodeInCookies.value)?.code;
+}
+
+if (!targetLang) {
+    // 获取请求头中的 accept-language 字符串，例如 "zh-Hant,zh;q=0.9,en-US;q=0.8,en;q=0.7"
+    const acceptLangHeader = Astro.request.headers.get("accept-language") || "";
+
+    // 提取第一个语言标识，并去掉质量因子（如 ";q=0.9"）
+    const languageCodeInHeader = acceptLangHeader.split(",")[0].split(";")[0]; // 例如 "zh-Hant" 或 "en-us"
+
+    const languageCode = preprocessLanguageCode(languageCodeInHeader);
+
+    // 首先尝试匹配完整的语言代码（包含地区属性），注意忽略大小写
+    targetLang = supportedLangs.find((lang) => lang.code === languageCode)?.code;
+
+    const d = supportedLangs.find((lang) => lang.code === languageCode);
+
+    // 如果未找到，再取语言主码（不含地区属性）
+    if (!targetLang) {
+        const primaryLang = languageCode.split("-")[0]; // 例如 "zh"
+
+        targetLang = supportedLangs.find((lang) => lang.code === primaryLang)?.code;
+    }
+}
+
+targetLang = targetLang || "en";
+
+// 重定向到对应语言页面（假设你的网站以语言代码作为路由前缀）
+return Astro.redirect(`/${targetLang}`, 302);
+---

@@ -1,0 +1,35 @@
+#banner {
+    display: flex;
+    width: 100%;
+}
+img,
+picture {
+    width: 100%;
+}
+.pink {
+    color: rgba(254, 83, 154, 1);
+}
+.bannerContainer {
+    display: block;
+    position: absolute;
+    width: 100%;
+    margin-top: -2%;
+    padding: 0;
+    color: rgba(255, 255, 255, 1);
+}
+.bannerContainer h1 {
+    font-size: 4rem;
+    margin-bottom: 30px;
+    margin-left: 13.5%;
+    vertical-align: top;
+    line-height: 1;
+}
+.bannerP {
+    margin-left: 13.5%;
+}
+.bannerText {
+    margin-top: 20px;
+    font-size: 1.5rem;
+    margin: 1.625rem 0 2.5rem 0;
+    line-height: 2.25rem;
+}

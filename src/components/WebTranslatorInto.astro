@@ -1,0 +1,461 @@
+---
+const { i18n, locale } = Astro.props;
+const svgs = import.meta.glob<string>("../assets/titles/*_web_translation.svg", {
+    query: "?raw",
+    import: "default",
+});
+const fileName = `${locale}_web_translation.svg`;
+
+let svgContent = "";
+
+// 找到匹配当前 locale 的 SVG
+for (const path in svgs) {
+    if (path.includes(fileName)) {
+        svgContent = await svgs[path]();
+        break;
+    }
+}
+
+// 如果没找到，则尝试英文版本
+if (!svgContent) {
+    for (const path in svgs) {
+        if (path.includes("en_web_translation.svg")) {
+            svgContent = await svgs[path]();
+            break;
+        }
+    }
+}
+
+const languagePairs: { lan1: string; lan2: string }[] = [
+    { lan1: "English", lan2: "Spanish" },
+    { lan1: "English", lan2: "French" },
+    { lan1: "English", lan2: "Portuguese" },
+    { lan1: "English", lan2: "Deutsch" },
+    { lan1: "English", lan2: "sc" },
+    { lan1: "English", lan2: "Japanese" },
+];
+
+const originalImageModules = import.meta.glob<{ default: { src: string } }>("../assets/images/webTrans/English_*", {
+    eager: true,
+});
+const blurImageModules = import.meta.glob<{ default: { src: string } }>("../assets/images/webTrans/*_blur*", {
+    eager: true,
+});
+
+const languagePairsImages: {
+    src1_1: string;
+    src1_2: string;
+    src1_3: string;
+    src2_1: string;
+    src2_2: string;
+    src2_3: string;
+}[] = languagePairs.map((pair) => {
+    const blur_webp1x = blurImageModules[`../assets/images/webTrans/${pair.lan2}_blur.webp`]?.default.src;
+    const blur_webp2x = blurImageModules[`../assets/images/webTrans/${pair.lan2}_blur@2x.webp`]?.default.src;
+    const blur_webp3x = blurImageModules[`../assets/images/webTrans/${pair.lan2}_blur@3x.webp`]?.default.src;
+
+    const blur_jpg1x = blurImageModules[`../assets/images/webTrans/${pair.lan2}_blur.jpg`]?.default.src;
+    const blur_jpg2x = blurImageModules[`../assets/images/webTrans/${pair.lan2}_blur@2x.jpg`]?.default.src;
+    const blur_jpg3x = blurImageModules[`../assets/images/webTrans/${pair.lan2}_blur@3x.jpg`]?.default.src;
+
+    const src1_1 = `${blur_webp1x} 1x, ${blur_webp2x} 2x, ${blur_webp3x} 3x`;
+    const src1_2 = `${blur_jpg1x} 1x, ${blur_jpg2x} 2x, ${blur_jpg3x} 3x`;
+    const src1_3 = blur_jpg1x;
+
+    const webp1x = originalImageModules[`../assets/images/webTrans/${pair.lan1}_${pair.lan2}.webp`]?.default.src;
+    const webp2x = originalImageModules[`../assets/images/webTrans/${pair.lan1}_${pair.lan2}@2x.webp`]?.default.src;
+    const webp3x = originalImageModules[`../assets/images/webTrans/${pair.lan1}_${pair.lan2}@3x.webp`]?.default.src;
+
+    const jpg1x = originalImageModules[`../assets/images/webTrans/${pair.lan1}_${pair.lan2}.jpg`]?.default.src;
+    const jpg2x = originalImageModules[`../assets/images/webTrans/${pair.lan1}_${pair.lan2}@2x.jpg`]?.default.src;
+    const jpg3x = originalImageModules[`../assets/images/webTrans/${pair.lan1}_${pair.lan2}@3x.jpg`]?.default.src;
+
+    const src2_1 = `${webp1x} 1x, ${webp2x} 2x, ${webp3x} 3x`;
+    const src2_2 = `${jpg1x} 1x, ${jpg2x} 2x, ${jpg3x} 3x`;
+    const src2_3 = jpg1x;
+
+    return { src1_1, src1_2, src1_3, src2_1, src2_2, src2_3 };
+});
+---
+
+<div class="sectionContainer">
+    <section class="title">
+        <div class="svgContainer" set:html={svgContent} />
+    </section>
+
+    <div class="introContent">
+        <p set:html={i18n["web.p"]} />
+    </div>
+
+    <div class="tab-content">
+        {
+            languagePairsImages.map((item, index) => (
+                <div class={`tab-pane ${index === 0 ? "active" : ""}`} id={`pane${index + 1}`}>
+                    <div class="diff-container">
+                        <div class="diff-item diff-item-1">
+                            <picture>
+                                <source type="image/webp" />
+                                <source srcset={item.src1_1} type="image/webp" />
+                                <source srcset={item.src1_2} type="image/jpg" />
+                                <img src={item.src1_3} alt="videioBorder" />
+                            </picture>
+                            <div class="overlay" />
+                        </div>
+
+                        <div class="diff-item diff-item-2">
+                            <picture>
+                                <source type="image/webp" />
+                                <source srcset={item.src2_1} type="image/webp" />
+                                <source srcset={item.src2_2} type="image/jpg" />
+                                <img src={item.src2_3} alt="videioBorder" />
+                            </picture>
+                        </div>
+
+                        <div class="diff-resizer" />
+                    </div>
+                </div>
+            ))
+        }
+    </div>
+
+    <div class="disclaimer">
+        <span class="disclaimer_title" set:html={i18n["disclaimer_title"]} />
+        <span class="disclaimer_text" set:html={i18n["disclaimer_NASA"]} />
+    </div>
+
+    <div class="webTranslatorNavbar tabs">
+        <button class="nav-section tab-btn active" data-paneid="pane1">
+            <span>English</span>&nbsp;<span class="icon-arrow-left2"></span><span class="icon-arrow-right2"
+            ></span>&nbsp;<span>Español</span>
+        </button>
+        <button class="nav-section tab-btn" data-paneid="pane2">
+            <span>English</span>&nbsp;<span class="icon-arrow-left2"></span><span class="icon-arrow-right2"
+            ></span>&nbsp;<span>Français</span>
+        </button>
+        <button class="nav-section tab-btn" data-paneid="pane3">
+            <span>English</span>&nbsp;<span class="icon-arrow-left2"></span><span class="icon-arrow-right2"
+            ></span>&nbsp;<span>Português</span>
+        </button>
+        <button class="nav-section tab-btn" data-paneid="pane4">
+            <span>English</span>&nbsp;<span class="icon-arrow-left2"></span><span class="icon-arrow-right2"
+            ></span>&nbsp;<span>Deutsch</span>
+        </button>
+        <button class="nav-section tab-btn" data-paneid="pane5">
+            <span>English</span>&nbsp;<span class="icon-arrow-left2"></span><span class="icon-arrow-right2"
+            ></span>&nbsp;<span style="font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;"
+                >简体中文</span
+            >
+        </button>
+        <button class="nav-section tab-btn" data-paneid="pane6">
+            <span>English</span>&nbsp;<span class="icon-arrow-left2"></span><span class="icon-arrow-right2"
+            ></span>&nbsp;<span style="font-family: 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', 'Meiryo', sans-serif;"
+                >日本語</span
+            >
+        </button>
+    </div>
+
+    <div class="gradientBg"></div>
+</div>
+
+<style>
+    .gradientBg {
+        width: 100%;
+        min-height: 252px;
+        margin-top: -50px;
+        background: linear-gradient(to bottom, #ffffff, #7c3aed33 80%);
+        background: -webkit-linear-gradient(to bottom, #ffffff, #7c3aed33 80%); /* 针对旧版 Chrome 和 Safari */
+        background: -moz-linear-gradient(to bottom, #ffffff, #7c3aed33 80%); /* 针对旧版 Firefox */
+        background: -o-linear-gradient(to bottom, #ffffff, #7c3aed33 80%); /* 针对旧版 Opera */
+        z-index: 1;
+    }
+    .disclaimer {
+        max-width: 1200px;
+        text-align: center;
+        margin-top: 25px;
+        font-size: 0.87rem;
+        color: #1b1b1b;
+    }
+    .disclaimer_title {
+        font-weight: 500;
+    }
+    .disclaimer_text {
+        font-weight: 400;
+    }
+    .webTranslatorNavbar {
+        height: 56px;
+        min-width: 1080px;
+        background: #e8e8ed;
+        border-radius: 100px 100px 100px 100px;
+        margin-top: 50px;
+        text-transform: none;
+        font-weight: 400;
+        z-index: 99;
+        display: flex;
+        align-items: stretch;
+        justify-content: space-around;
+    }
+    .introContent {
+        width: 67%;
+        max-width: 1280px;
+    }
+    .tab-content {
+        display: flex;
+        justify-content: space-around;
+    }
+    .nav-section {
+        margin: 0;
+        width: 200px;
+        height: 100%;
+        background: rgba(232, 232, 237, 1);
+        border-radius: 999px 999px 999px 999px;
+        border: none;
+        color: #333333;
+        display: inline-block;
+        text-align: center;
+        align-content: center;
+        font-size: 1rem;
+    }
+    .nav-section:hover {
+        background: #d4d4d8;
+    }
+    .icon-arrow-left2,
+    .icon-arrow-right2 {
+        font-size: 0.65rem;
+    }
+    .tab-pane {
+        display: none;
+    }
+    .tab-pane.active {
+        display: block;
+    }
+    .nav-section.active {
+        color: #ffffff;
+        background: #1d1d1f;
+    }
+    .text-section {
+        margin-top: 103px;
+        line-height: 54px;
+    }
+    .text-section h2 {
+        font-weight: normal;
+        font-size: 2.25rem;
+        line-height: 3.375rem;
+        text-align: center;
+        font-style: normal;
+        text-transform: none;
+        margin: 0;
+    }
+    .text-section .color-font {
+        font-weight: bold;
+        color: #7c3aed;
+        background: linear-gradient(147.27114018726542deg, #7c3aed 0%, #f4439f 100%);
+        -webkit-background-clip: text; /* 让背景只裁剪到文字部分 */
+        -webkit-text-fill-color: transparent; /* 设置文字颜色为透明 */
+    }
+
+    .textTranslatorbg {
+        position: absolute;
+        width: 100%;
+        z-index: -1;
+    }
+    .icon-vectorHorizontal {
+        font-size: 0.5rem;
+        color: #333333;
+    }
+
+    /* 下面是tab图片滑块拖拽效果*/
+    /* 容器 */
+    .tab-pane {
+        position: relative;
+        width: 1200px; /* 可调整 */
+        aspect-ratio: 16 / 9;
+    }
+    .diff-container {
+        position: relative;
+        aspect-ratio: 16 / 9;
+        overflow: hidden;
+        border-radius: 20px;
+        box-shadow: 0px 0px 60px 0px rgba(124, 58, 237, 0.4);
+        margin-top: 33px;
+    }
+
+    /* 底层图片（始终完整显示） */
+    .diff-item {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .diff-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 20px;
+    }
+
+    /* 上层图片（不改变尺寸，仅裁剪显示区域） */
+    .diff-item-2 {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        clip-path: inset(0 50% 0 0); /* 初始显示左侧 50% */
+    }
+
+    /* 让图片始终铺满 */
+    .diff-item-2 img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: absolute;
+        top: 0;
+        left: 0;
+        border-radius: 20px;
+    }
+    .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.05);
+        pointer-events: none; /* 避免阻止点击等事件 */
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.3); /* 可选：添加阴影效果 */
+    }
+    /* 滑块样式 */
+    .diff-resizer {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: ew-resize;
+        transform: translate(-50%, -50%);
+        border: 2px solid rgba(0, 0, 0, 0.1);
+        background: #ffffff;
+        box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.4);
+    }
+
+    /* 左右箭头 */
+    .diff-resizer::before,
+    .diff-resizer::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        width: 8px;
+        height: 8px;
+        background: #7C3AE;
+        border: solid rgba(124, 58, 237, 1);
+        border-width: 0 2px 2px 0;
+        display: inline-block;
+    }
+
+    .diff-resizer::before {
+        left: 8px;
+        transform: translateY(-50%) rotate(135deg);
+    }
+
+    .diff-resizer::after {
+        right: 8px;
+        transform: translateY(-50%) rotate(-45deg);
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // 查询所有的tabs选择按钮，当前页面应该有5个
+        const tabs: NodeListOf<HTMLButtonElement> = document.querySelectorAll(".tab-btn");
+
+        // 查询出所有的tabs的内容区域
+        const panes: NodeListOf<HTMLDivElement> = document.querySelectorAll(".tab-pane");
+
+        const setupResizer = (activePane: HTMLDivElement) => {
+            const resizer = activePane.querySelector(".diff-resizer") as HTMLDivElement | null;
+            const diffItem2 = activePane.querySelector(".diff-item-2") as HTMLDivElement | null;
+            const container = activePane.querySelector(".diff-container") as HTMLDivElement | null;
+
+            if (!resizer || !diffItem2 || !container) return;
+
+            let isDragging = false;
+            diffItem2.style.clipPath = "inset(0 50% 0 0)";
+            resizer.style.left = "50%";
+
+            const getEventX = (event: MouseEvent | TouchEvent): number => {
+                return event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
+            };
+
+            const startDragging = (event: MouseEvent | TouchEvent) => {
+                isDragging = true;
+                document.body.style.userSelect = "none";
+            };
+
+            const onDrag = (event: MouseEvent | TouchEvent) => {
+                if (!isDragging) return;
+
+                const rect = container.getBoundingClientRect();
+                const offsetX = getEventX(event) - rect.left;
+                const percentage = Math.max(0, Math.min(offsetX / rect.width, 1));
+
+                diffItem2.style.clipPath = `inset(0 ${100 - percentage * 100}% 0 0)`;
+                resizer.style.left = `${percentage * 100}%`;
+            };
+
+            const stopDragging = () => {
+                isDragging = false;
+                document.body.style.userSelect = "auto";
+            };
+
+            // **先移除之前的监听，防止重复绑定**
+            resizer.removeEventListener("mousedown", startDragging);
+            resizer.removeEventListener("touchstart", startDragging);
+            document.removeEventListener("mousemove", onDrag);
+            document.removeEventListener("touchmove", onDrag);
+            document.removeEventListener("mouseup", stopDragging);
+            document.removeEventListener("touchend", stopDragging);
+
+            // **重新绑定监听**
+            resizer.addEventListener("mousedown", startDragging);
+            resizer.addEventListener("touchstart", startDragging);
+            document.addEventListener("mousemove", onDrag);
+            document.addEventListener("touchmove", onDrag);
+            document.addEventListener("mouseup", stopDragging);
+            document.addEventListener("touchend", stopDragging);
+        };
+
+        tabs.forEach((tab) => {
+            tab.addEventListener("click", () => {
+                // 移除所有 active 类
+                tabs.forEach((t) => t.classList.remove("active"));
+                panes.forEach((pane) => pane.classList.remove("active"));
+
+                // 获取 data-tab 关联的内容 ID
+                const paneId = tab.dataset.paneid;
+                if (paneId) {
+                    const activePane = document.getElementById(paneId);
+                    if (activePane instanceof HTMLDivElement) {
+                        tab.classList.add("active");
+                        activePane.classList.add("active");
+
+                        // **确保 `setupResizer` 在 `setTimeout` 中执行，确保 DOM 变化后再绑定**
+                        setTimeout(() => {
+                            setupResizer(activePane);
+                        }, 50);
+                    }
+                }
+            });
+        });
+
+        // **初始化第一个 tab**
+        const firstActivePane = document.querySelector(".tab-pane.active") as HTMLDivElement | null;
+        if (firstActivePane) {
+            setupResizer(firstActivePane);
+        }
+    });
+</script>

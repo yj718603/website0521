@@ -1,0 +1,187 @@
+---
+import { callSafely } from "astro:actions";
+
+import footerBgJpg from "../assets/images/bg_footer.jpg";
+import footerBgWebp from "../assets/images/bg_footer.webp";
+import footerBgJpg2x from "../assets/images/bg_footer@2x.jpg";
+import footerBgWebp2x from "../assets/images/bg_footer@2x.webp";
+import footerBgJpg3x from "../assets/images/bg_footer@3x.jpg";
+import footerBgWebp3x from "../assets/images/bg_footer@3x.webp";
+
+import ailipay from "../assets/payments/Alipay.png";
+import applepay from "../assets/payments/ApplePay.png";
+import btc from "../assets/payments/BTC.png";
+import eth from "../assets/payments/ETH.png";
+import googlepay from "../assets/payments/GooglePay.png";
+import jcb from "../assets/payments/JCB.png";
+import mastercard from "../assets/payments/Mastercard.png";
+import paypal from "../assets/payments/PayPal.png";
+import usdc from "../assets/payments/USDC.png";
+import usdt from "../assets/payments/USDT.png";
+import visa from "../assets/payments/Visa.png";
+import wechat from "../assets/payments/WeChat.png";
+
+import blur from "../assets/images/blurBg.png";
+
+import LanguagesDropdown from "./LanguagesDropdown.astro";
+
+const paymentIcons = [
+    { src: mastercard.src, alt: "Mastercard" },
+    { src: visa.src, alt: "Visa" },
+    { src: paypal.src, alt: "PayPal" },
+    { src: applepay.src, alt: "Apple Pay" },
+    { src: ailipay.src, alt: "Alipay" },
+    { src: wechat.src, alt: "WeChat Pay" },
+    { src: googlepay.src, alt: "Google Pay" },
+    { src: jcb.src, alt: "JCB" },
+    { src: btc.src, alt: "Bitcoin" },
+    { src: eth.src, alt: "Ethereum" },
+    { src: usdc.src, alt: "USDC" },
+    { src: usdt.src, alt: "USDT" },
+];
+
+const { i18n, locale } = Astro.props;
+---
+
+<section class="sectionContainer footer-container">
+    <!-- <img src={footerBg.src} alt="" /> -->
+    <picture style="min-height: 900px;">
+        <source type="image/webp" />
+        <source
+            srcset={`${footerBgWebp.src} 1x, ${footerBgWebp2x.src} 2x, ${footerBgWebp3x.src} 3x`}
+            type="image/webp"
+        />
+        <source srcset={`${footerBgJpg.src} 1x, ${footerBgJpg2x.src} 2x, ${footerBgJpg3x.src} 3x`} type="image/jpeg" />
+        <img src={footerBgJpg.src} alt="footer_background" style="min-height: 900px;" />
+    </picture>
+    <div class="statementContent">
+        <div style="padding: 60px 30px;">
+            <h2>{i18n["privacy.title"]}</h2>
+            <p>{i18n["privacy.p1"]}</p>
+            <p>{i18n["privacy.p2"]}</p>
+            <p>{i18n["privacy.p3"]}</p>
+            <p>{i18n["privacy.p4"]}</p>
+            <p>{i18n["privacy.p5"]}</p>
+        </div>
+    </div>
+
+    <div class="iconContent">
+        {paymentIcons.map((icon, index) => <img src={icon.src} alt={icon.alt} />)}
+    </div>
+    <div class="footer">
+        <div class="footer-left">
+            <span>@2025 mCopilot.net All rights reserved</span><span class="divider">|</span>
+            <a href="/">{i18n["footer.terms"]}</a><span class="divider">|</span>
+            <a href="/">{i18n["footer.privacy"]}</a>
+            <!-- <div class="footer-right">
+                <LanguagesDropdown />
+            </div> -->
+        </div>
+        <!-- 
+        <style>
+            .footer-container .language-dropdown .dropdown-toggle {
+                background-color: transparent;
+                color: #a0a1b1;
+                border: 1px solid rgba(160, 161, 177, 0.5);
+            }
+            .footer-container .language-dropdown .dropdown-menu {
+                bottom: 60px;
+            }
+        </style> -->
+
+        <style>
+            .footer-container {
+                display: flex;
+                width: 100%;
+                justify-content: center;
+                position: relative;
+                min-height: 900px;
+            }
+
+            .footer-container picture,
+            .footer-container img {
+                position: relative;
+                width: 100%;
+            }
+
+            .statementContent {
+                position: absolute;
+                width: 74%;
+                max-width: 1400px;
+                top: 200px;
+                background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.15) 100%);
+                border-radius: 10px 10px 10px 10px;
+                backdrop-filter: blur(10px); /* 毛玻璃模糊效果 */
+                -webkit-backdrop-filter: blur(10px);
+            }
+
+            .statementContent h2 {
+                font-weight: bold;
+                font-size: 2.25rem;
+                color: rgba(255, 255, 255, 0.9);
+                line-height: 50px;
+                text-align: left;
+                font-style: normal;
+                text-transform: none;
+            }
+            .statementContent p {
+                font-weight: 400;
+                font-size: 1rem;
+                color: rgba(255, 255, 255, 0.9);
+                line-height: 18px;
+                text-align: left;
+                font-style: normal;
+                text-transform: none;
+            }
+            .iconContent {
+                display: flex;
+                position: absolute;
+                bottom: 20%;
+                width: 74%;
+                max-width: 1400px;
+                gap: 20px;
+            }
+            .iconContent img {
+                width: auto;
+                height: 3rem;
+            }
+            .footer {
+                display: flex;
+                position: absolute;
+                bottom: 50px;
+                width: 74%;
+                max-width: 1400px;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .footer-left {
+                display: flex;
+                gap: 20px;
+            }
+            .footer-left span {
+                font-size: 1rem;
+                color: rgba(160, 161, 177, 0.75);
+                line-height: 22px;
+                text-align: left;
+                font-style: normal;
+                text-transform: none;
+            }
+            .footer-left .divider {
+                color: rgba(255, 255, 255, 0.2);
+            }
+            .footer-left a {
+                font-size: 1rem;
+                color: rgba(255, 255, 255, 1);
+                line-height: 22px;
+                text-align: left;
+                font-style: normal;
+                text-transform: none;
+                font-style: normal;
+            }
+            /* .footer .language-dropdown .dropdown-toggle {
+                background-color: transparent !important;
+                color: #a0a1b1 !important;
+            } */
+        </style>
+    </div>
+</section>

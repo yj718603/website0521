@@ -1,0 +1,171 @@
+---
+import Navbar from "../../components/Navbar.astro";
+import Banner from "../../components/Banner.astro";
+import WebTranslatorInto from "../../components/WebTranslatorInto.astro";
+import SubtitleTranslatorInfo from "../../components/SubtitleTranslatorInfo.astro";
+import InputTranslatorInfo from "../../components/InputTranslatorInfo.astro";
+import TextTranslatorInfo from "../../components/TextTranslationInfo2.astro";
+import MoreTools from "../../components/MoreTools.astro";
+import MyLLM from "../../components/MyLLM.astro";
+import Footer from "../../components/Footer.astro";
+
+import translations from "../../locales/i18n.json";
+
+import JsonLd from "../../components/JsonLd.astro";
+
+interface JsonModule {
+    default: Record<string, unknown>;
+}
+
+// 获取当前语言参数（例如 /en 或 /zh-Hans）
+const { locale } = Astro.params;
+
+// 根据 URL 中的语言代码获取对应翻译数据，如果没有匹配到则默认使用英文或你指定的默认语言
+const i18n = translations[locale as keyof typeof translations] || translations["en"];
+
+// 动态生成每个语言版本页面
+export async function getStaticPaths() {
+    return Object.keys(translations).map((lang) => ({
+        params: { locale: lang },
+    }));
+}
+
+// 动态加载对应语言的 JSON‑LD，并告诉 TS 它是 JsonModule
+let jsonLdData: Record<string, unknown>;
+try {
+    const mod = (await import(`../../data/jsonld/home/${locale}.json`)) as JsonModule;
+    jsonLdData = mod.default;
+} catch {
+    const mod = (await import(`../../data/jsonld/home/en.json`)) as JsonModule;
+    jsonLdData = mod.default;
+}
+
+const host = "https://www.mtranslator.dev";
+const langs = [
+    { code: "en", path: "/en" },
+    { code: "es", path: "/es" },
+    { code: "fr", path: "/fr" },
+    { code: "ru", path: "/ru" },
+    { code: "pt", path: "/pt" },
+    { code: "de", path: "/de" },
+    { code: "it", path: "/it" },
+    { code: "zh-Hans", path: "/zh-Hans" },
+    { code: "zh-Hant", path: "/zh-Hant" },
+    { code: "ja", path: "/ja" },
+    { code: "ko", path: "/ko" },
+];
+
+// 定义一个映射表，把脚本式语言标签转为 OG 要求的 “语言_地区” 格式
+const ogLocaleMap: Record<string, string> = {
+    "zh-Hans": "zh_CN",
+    "zh-Hant": "zh_TW",
+};
+
+// 生成当前页的 og:locale
+const ogLocale = ogLocaleMap[locale] ?? locale.replace("-", "_");
+---
+
+<html lang={locale}>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{i18n["head.title"]}</title>
+        <meta name="description" content={i18n["meta.description"]} />
+
+        <meta name="robots" content="index, follow" />
+
+        <link rel="canonical" href={`${host}${langs.find((l) => l.code === locale)?.path ?? "/en"}`} />
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="stylesheet" href="/css/noto_fonts.css" />
+        <link rel="stylesheet" href="/css/fonts.css" />
+        <link rel="stylesheet" href="/css/index.css" />
+        <!-- 渲染当前语言的 JSON‑LD -->
+        <JsonLd json={jsonLdData} />
+
+        {langs.map(({ code, path }) => <link rel="alternate" href={`${host}${path}`} hreflang={code} />)}
+        <!-- 默认页面，当浏览器语言不在上述列表时，使用英语 -->
+        <link rel="alternate" href={`${host}/en`} hreflang="x-default" />
+
+        <link rel="preload" as="image" href="https://static.mcopilot.io/mtranslator/og_img1200x630.024d7670.jpg" />
+
+        <meta name="theme-color" content="#7C3AED" />
+
+        <!-- ——— Open Graph for social platforms ——— -->
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="mTranslator" />
+        <meta property="og:title" content={i18n["head.title"]} />
+        <meta property="og:description" content={i18n["meta.description"]} />
+        <meta property="og:url" content={`${host}${langs.find((l) => l.code === locale)?.path ?? "/en"}`} />
+
+        <!-- 标准尺寸，1× 分辨率 -->
+        <meta property="og:image" content="https://static.mcopilot.io/mtranslator/og_img1200x630.024d7670.jpg" />
+        <meta
+            property="og:image:secure_url"
+            content="https://static.mcopilot.io/mtranslator/og_img1200x630.024d7670.jpg"
+        />
+        <meta property="og:image:type" content="image/jpeg" />
+        <meta property="og:image:alt" content={i18n["twitter.image.alt"]} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+
+        <meta property="og:image" content="https://static.mcopilot.io/mtranslator/og_img600x600.787ba620.jpg" />
+        <meta
+            property="og:image:secure_url"
+            content="https://static.mcopilot.io/mtranslator/og_img600x600.787ba620.jpg"
+        />
+        <meta property="og:image:type" content="image/jpeg" />
+        <meta property="og:image:alt" content={i18n["twitter.image.alt"]} />
+        <meta property="og:image:width" content="600" />
+        <meta property="og:image:height" content="600" />
+
+        <!-- @2× 高分辨率版本 -->
+        <meta property="og:image" content="https://static.mcopilot.io/mtranslator/og_img1200x630@2x.9e41085d.jpg" />
+        <meta
+            property="og:image:secure_url"
+            content="https://static.mcopilot.io/mtranslator/og_img1200x630@2x.9e41085d.jpg"
+        />
+        <meta property="og:image:type" content="image/jpeg" />
+        <meta property="og:image:alt" content={i18n["twitter.image.alt"]} />
+        <meta property="og:image:width" content="2400" />
+        <meta property="og:image:height" content="1260" />
+
+        <meta property="og:image" content="https://static.mcopilot.io/mtranslator/og_img600x600@2x.4db84dcb.jpg" />
+        <meta
+            property="og:image:secure_url"
+            content="https://static.mcopilot.io/mtranslator/og_img600x600@2x.4db84dcb.jpg"
+        />
+        <meta property="og:image:type" content="image/jpeg" />
+        <meta property="og:image:alt" content={i18n["twitter.image.alt"]} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="1200" />
+
+        <!-- Twitter Card 支持 -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:image" content="https://static.mcopilot.io/mtranslator/og_img1200x630@2x.9e41085d.jpg" />
+        <meta name="twitter:title" content={i18n["head.title"]} />
+        <meta name="twitter:description" content={i18n["meta.description"]} />
+        <meta name="twitter:image:alt" content={i18n["twitter.image.alt"]} />
+        <meta name="twitter:url" content={`${host}${langs.find((l) => l.code === locale)?.path || "/en"}`} />
+
+        <meta property="og:locale" content={ogLocale} />
+        {
+            langs
+                .filter((l) => l.code !== locale)
+                .map((l) => {
+                    const alt = ogLocaleMap[l.code] ?? l.code.replace("-", "_");
+                    return <meta property="og:locale:alternate" content={alt} />;
+                })
+        }
+    </head>
+    <body>
+        <Navbar locale={locale} i18n={i18n} />
+        <Banner locale={locale} i18n={i18n} />
+        <WebTranslatorInto locale={locale} i18n={i18n} />
+        <SubtitleTranslatorInfo locale={locale} i18n={i18n} />
+        <InputTranslatorInfo locale={locale} i18n={i18n} />
+        <TextTranslatorInfo locale={locale} i18n={i18n} />
+        <MyLLM locale={locale} i18n={i18n} />
+        <MoreTools locale={locale} i18n={i18n} />
+        <Footer locale={locale} i18n={i18n} />
+    </body>
+</html>
